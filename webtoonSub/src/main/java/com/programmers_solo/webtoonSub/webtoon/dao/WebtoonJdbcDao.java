@@ -28,20 +28,17 @@ public class WebtoonJdbcDao implements WebtoonDao{
     @Override
     public Optional<Webtoon> findById(UUID webtoonId) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM webtoons WHERE webtoon_id = :UUID_TO_BIN(:webtoonId)",
+            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM webtoons WHERE webtoon_id = UUID_TO_BIN(:webtoonId)",
                     Collections.singletonMap("webtoonId", webtoonId.toString().getBytes()), webtoonRowMapper));
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | NullPointerException e) {
             return Optional.empty();
         }
     }
 
-    /**
-     * % 유효한지 검사해봐야함
-     */
     @Override
     public Optional<Webtoon> findByName(String webtoonName) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM webtoons WHERE webtoon_name = %:webtoonName%",
+            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM webtoons WHERE webtoon_name = :webtoonName",
                     Collections.singletonMap("webtoonName", webtoonName), webtoonRowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -51,9 +48,9 @@ public class WebtoonJdbcDao implements WebtoonDao{
     @Override
     public Optional<Webtoon> findByAuthorId(UUID authorId) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM webtoons WHERE author_id = :UUID_TO_BIN(:authorId)",
+            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM webtoons WHERE author_id = UUID_TO_BIN(:authorId)",
                     Collections.singletonMap("authorId", authorId.toString().getBytes()), webtoonRowMapper));
-        } catch (EmptyResultDataAccessException e) {
+        } catch (EmptyResultDataAccessException | NullPointerException e) {
             return Optional.empty();
         }
     }
@@ -67,6 +64,8 @@ public class WebtoonJdbcDao implements WebtoonDao{
         }
         return webtoon;
     }
+
+
 
     @Override
     public Webtoon update(Webtoon webtoon) {
@@ -107,13 +106,13 @@ public class WebtoonJdbcDao implements WebtoonDao{
 
     private Map<String, Object> toWebtoonParamMap(Webtoon webtoon) {
         HashMap<String, Object> paramMap = new HashMap<>();
-        paramMap.put("webtoonId", webtoon.getWebtoonId());
+        paramMap.put("webtoonId", webtoon.getWebtoonId().toString().getBytes());
         paramMap.put("webtoonName", webtoon.getWebtoonName());
         paramMap.put("savePath", webtoon.getSavePath());
-        paramMap.put("authorId", webtoon.getAuthorId());
+        paramMap.put("authorId", webtoon.getAuthorId().toString().getBytes());
         paramMap.put("createdAt", webtoon.getCreatedAt());
         paramMap.put("updatedAt", webtoon.getUpdatedAt());
-        paramMap.put("webtoonType", webtoon.getWebtoonType());
+        paramMap.put("webtoonType", webtoon.getWebtoonType().toString());
         paramMap.put("description", webtoon.getDescription());
         return paramMap;
     }

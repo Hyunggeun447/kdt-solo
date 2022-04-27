@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -21,6 +22,11 @@ public class Webtoon {
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
+    public void changeName(String newName) {
+        this.webtoonName = newName;
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public void changeFree() {
         this.webtoonType = WebtoonType.FREE;
         this.updatedAt = LocalDateTime.now();
@@ -30,6 +36,4 @@ public class Webtoon {
         this.webtoonType = type;
         this.updatedAt = LocalDateTime.now();
     }
-
-
 }
