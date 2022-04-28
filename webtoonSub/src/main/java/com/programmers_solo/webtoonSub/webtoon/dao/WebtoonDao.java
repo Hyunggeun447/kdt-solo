@@ -22,5 +22,7 @@ public interface WebtoonDao {
 
     void deleteAll();
 
+    List<Webtoon> findBySearchText(String searchText);
+
 
 }

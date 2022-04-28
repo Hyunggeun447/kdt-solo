@@ -82,6 +82,12 @@ public class WebtoonJdbcDao implements WebtoonDao{
         jdbcTemplate.update("DELETE FROM webtoons", Collections.emptyMap());
     }
 
+    @Override
+    public List<Webtoon> findBySearchText(String searchText) {
+        return jdbcTemplate.query("SELECT * FROM webtoons WHERE webtoon_name LIKE :searchText",
+                Collections.singletonMap("searchText", "%" + searchText + "%"), webtoonRowMapper);
+    }
+
     private static final RowMapper<Webtoon> webtoonRowMapper = (resultSet, i) -> {
         UUID webtoonId = toUUID(resultSet.getBytes("webtoon_id"));
         String webtoonName = resultSet.getString("webtoon_name");

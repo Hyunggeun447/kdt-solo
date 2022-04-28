@@ -151,11 +151,12 @@ class WebtoonJdbcDaoTest {
     class findAll {
 
         @Test
-        @DisplayName("전체목록 조회 -> 10개가 조회되어야 함")
+        @DisplayName("전체목록 조회 -> n개가 조회되어야 함")
         public void findAll() throws Exception {
 
             //given
-            for (int i = 0; i < 9; i++) {
+            int n = 9;
+            for (int i = 0; i < n; i++) {
                 webtoonDao.insert(Webtoon.builder()
                         .webtoonId(UUID.randomUUID())
                         .webtoonName("웹툰Test" + i)
@@ -171,7 +172,7 @@ class WebtoonJdbcDaoTest {
             List<Webtoon> all = webtoonDao.findAll();
 
             //then
-            assertThat(all.size()).isEqualTo(10);
+            assertThat(all.size()).isEqualTo(n+1);
         }
 
         @Test
@@ -376,6 +377,107 @@ class WebtoonJdbcDaoTest {
                     .build();
             //then
             assertThrows(RuntimeException.class, () -> webtoonDao.update(webtoon));
+        }
+    }
+
+    @Nested
+    @DisplayName("부분 검색어로 찾기")
+    class findBySearchTextTest {
+        @Test
+        @DisplayName("부분 검색어로 찾기 [검색어] 가 들어간 웹툰 -> n개 조회")
+        public void findBySearchTextTest() throws Exception {
+            //given
+            int n = 9;
+            for (int i = 0; i < n; i++) {
+                webtoonDao.insert(Webtoon.builder()
+                        .webtoonId(UUID.randomUUID())
+                        .webtoonName("웹[검색어]툰Test" + i)
+                        .authorId(UUID.randomUUID())
+                        .webtoonType(WebtoonType.FREE)
+                        .createdAt(LocalDateTime.now())
+                        .savePath("/여기서/조기에/저장경로")
+                        .description("상세설명")
+                        .build());
+            }
+
+            //when
+            List<Webtoon> BySearchText = webtoonDao.findBySearchText("검색어");
+
+            //then
+            assertThat(BySearchText.size()).isEqualTo(n);
+        }
+
+        @Test
+        @DisplayName("null로 조회-> List.size = 0")
+        public void findBySearchTextIsNull() throws Exception {
+            //given
+            int n = 9;
+            for (int i = 0; i < n; i++) {
+                webtoonDao.insert(Webtoon.builder()
+                        .webtoonId(UUID.randomUUID())
+                        .webtoonName("웹[검색어]툰Test" + i)
+                        .authorId(UUID.randomUUID())
+                        .webtoonType(WebtoonType.FREE)
+                        .createdAt(LocalDateTime.now())
+                        .savePath("/여기서/조기에/저장경로")
+                        .description("상세설명")
+                        .build());
+            }
+
+            //when
+            List<Webtoon> BySearchText = webtoonDao.findBySearchText(null);
+
+            //then
+            assertThat(BySearchText.size()).isEqualTo(0);
+        }
+
+        @Test
+        @DisplayName("공백으로 찾기 -> 전체 리스트가 조회됌 -> List.size = n+1")
+        public void findBySearchTextIsBlank() throws Exception {
+            //given
+            int n = 9;
+            for (int i = 0; i < n; i++) {
+                webtoonDao.insert(Webtoon.builder()
+                        .webtoonId(UUID.randomUUID())
+                        .webtoonName("웹[검색어]툰Test" + i)
+                        .authorId(UUID.randomUUID())
+                        .webtoonType(WebtoonType.FREE)
+                        .createdAt(LocalDateTime.now())
+                        .savePath("/여기서/조기에/저장경로")
+                        .description("상세설명")
+                        .build());
+            }
+
+            //when
+            List<Webtoon> BySearchText = webtoonDao.findBySearchText("");
+
+            //then
+            assertThat(BySearchText.size()).isEqualTo(n+1);
+        }
+
+
+        @Test
+        @DisplayName("DB에 존재하지 않는 단어로 찾기 ->  List.size = 0")
+        public void findBySearchTextIsVoid() throws Exception {
+            //given
+            int n = 9;
+            for (int i = 0; i < n; i++) {
+                webtoonDao.insert(Webtoon.builder()
+                        .webtoonId(UUID.randomUUID())
+                        .webtoonName("웹[검색어]툰Test" + i)
+                        .authorId(UUID.randomUUID())
+                        .webtoonType(WebtoonType.FREE)
+                        .createdAt(LocalDateTime.now())
+                        .savePath("/여기서/조기에/저장경로")
+                        .description("상세설명")
+                        .build());
+            }
+
+            //when
+            List<Webtoon> BySearchText = webtoonDao.findBySearchText("절대존재하지않는 검색어");
+
+            //then
+            assertThat(BySearchText.size()).isEqualTo(0);
         }
     }
 }

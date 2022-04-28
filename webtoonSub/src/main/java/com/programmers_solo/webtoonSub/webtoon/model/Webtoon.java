@@ -3,6 +3,7 @@ package com.programmers_solo.webtoonSub.webtoon.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.ToString;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -11,6 +12,7 @@ import java.util.UUID;
 @AllArgsConstructor
 @Builder
 @Getter
+@ToString
 public class Webtoon {
 
     private final UUID webtoonId;
@@ -27,6 +29,11 @@ public class Webtoon {
         this.updatedAt = LocalDateTime.now();
     }
 
+    public void changePath(String newPath) {
+        this.savePath = newPath;
+        this.updatedAt = LocalDateTime.now();
+    }
+
     public void changeFree() {
         this.webtoonType = WebtoonType.FREE;
         this.updatedAt = LocalDateTime.now();
@@ -34,6 +41,11 @@ public class Webtoon {
 
     public void changeType(WebtoonType type) {
         this.webtoonType = type;
+        this.updatedAt = LocalDateTime.now();
+    }
+
+    public void changeDescription(String description) {
+        this.description = description;
         this.updatedAt = LocalDateTime.now();
     }
 }
