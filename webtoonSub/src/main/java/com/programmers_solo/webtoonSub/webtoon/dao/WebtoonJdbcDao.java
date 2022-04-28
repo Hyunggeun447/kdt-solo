@@ -25,10 +25,18 @@ public class WebtoonJdbcDao implements WebtoonDao{
         return jdbcTemplate.query("SELECT * FROM webtoons", webtoonRowMapper);
     }
 
+    private final String SELECT_BY_WEBTOON_ID_SQL = "SELECT * FROM webtoons WHERE webtoon_id = UUID_TO_BIN(:webtoonId)";
+    private final String SELECT_BY_WEBTOON_NAME_SQL = "SELECT * FROM webtoons WHERE webtoon_name = :webtoonName";
+    private final String SELECT_BY_AUTHOR_ID_SQL = "SELECT * FROM webtoons WHERE author_id = UUID_TO_BIN(:authorId)";
+    private final String INSERT_WEBTOON_SQL = "INSERT INTO webtoons(webtoon_id, webtoon_name, save_path, author_id, webtoon_type, description, created_at, updated_at)" +
+            " VALUES(UUID_TO_BIN(:webtoonId), :webtoonName, :savePath, UUID_TO_BIN(:authorId), :webtoonType, :description, :createdAt, :updatedAt)";
+    private final String UPDATE_WEBTOON_SQL = "UPDATE webtoons SET webtoon_name = :webtoonName, save_path = :savePath, webtoon_type = :webtoonType, description = :description, updated_at = :updatedAt WHERE webtoon_id = UUID_TO_BIN(:webtoonId)";
+    private final String SELECT_BY_SEARCH_TEXT_SQL = "SELECT * FROM webtoons WHERE webtoon_name LIKE :searchText";
+
     @Override
     public Optional<Webtoon> findById(UUID webtoonId) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM webtoons WHERE webtoon_id = UUID_TO_BIN(:webtoonId)",
+            return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_WEBTOON_ID_SQL,
                     Collections.singletonMap("webtoonId", webtoonId.toString().getBytes()), webtoonRowMapper));
         } catch (EmptyResultDataAccessException | NullPointerException e) {
             return Optional.empty();
@@ -38,7 +46,7 @@ public class WebtoonJdbcDao implements WebtoonDao{
     @Override
     public Optional<Webtoon> findByName(String webtoonName) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM webtoons WHERE webtoon_name = :webtoonName",
+            return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_WEBTOON_NAME_SQL,
                     Collections.singletonMap("webtoonName", webtoonName), webtoonRowMapper));
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty();
@@ -48,7 +56,7 @@ public class WebtoonJdbcDao implements WebtoonDao{
     @Override
     public Optional<Webtoon> findByAuthorId(UUID authorId) {
         try {
-            return Optional.of(jdbcTemplate.queryForObject("SELECT * FROM webtoons WHERE author_id = UUID_TO_BIN(:authorId)",
+            return Optional.of(jdbcTemplate.queryForObject(SELECT_BY_AUTHOR_ID_SQL,
                     Collections.singletonMap("authorId", authorId.toString().getBytes()), webtoonRowMapper));
         } catch (EmptyResultDataAccessException | NullPointerException e) {
             return Optional.empty();
@@ -57,8 +65,7 @@ public class WebtoonJdbcDao implements WebtoonDao{
 
     @Override
     public Webtoon insert(Webtoon webtoon) {
-        int insert = jdbcTemplate.update("INSERT INTO webtoons(webtoon_id, webtoon_name, save_path, author_id, webtoon_type, description, created_at, updated_at)" +
-                " VALUES(UUID_TO_BIN(:webtoonId), :webtoonName, :savePath, UUID_TO_BIN(:authorId), :webtoonType, :description, :createdAt, :updatedAt)", toWebtoonParamMap(webtoon));
+        int insert = jdbcTemplate.update(INSERT_WEBTOON_SQL, toWebtoonParamMap(webtoon));
         if (insert != 1) {
             throw new RuntimeException("Not insert");
         }
@@ -69,8 +76,7 @@ public class WebtoonJdbcDao implements WebtoonDao{
 
     @Override
     public Webtoon update(Webtoon webtoon) {
-        int update = jdbcTemplate.update("UPDATE webtoons SET webtoon_name = :webtoonName, save_path = :savePath, webtoon_type = :webtoonType, description = :description, updated_at = :updatedAt WHERE webtoon_id = UUID_TO_BIN(:webtoonId)",
-                toWebtoonParamMap(webtoon));
+        int update = jdbcTemplate.update(UPDATE_WEBTOON_SQL, toWebtoonParamMap(webtoon));
         if (update != 1) {
             throw new RuntimeException("Not update");
         }
@@ -84,7 +90,7 @@ public class WebtoonJdbcDao implements WebtoonDao{
 
     @Override
     public List<Webtoon> findBySearchText(String searchText) {
-        return jdbcTemplate.query("SELECT * FROM webtoons WHERE webtoon_name LIKE :searchText",
+        return jdbcTemplate.query(SELECT_BY_SEARCH_TEXT_SQL,
                 Collections.singletonMap("searchText", "%" + searchText + "%"), webtoonRowMapper);
     }
 

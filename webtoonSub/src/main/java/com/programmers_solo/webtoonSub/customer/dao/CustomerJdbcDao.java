@@ -1,0 +1,43 @@
+package com.programmers_solo.webtoonSub.customer.dao;
+
+import com.programmers_solo.webtoonSub.customer.model.Customer;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+//ToDo
+@Repository
+public class CustomerJdbcDao implements CustomerDao {
+
+    @Override
+    public List<Customer> findAll() {
+        return null;
+    }
+
+    @Override
+    public Optional<Customer> findById(UUID customerId) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Customer> findByEmail(String email) {
+        return Optional.empty();
+    }
+
+    @Override
+    public Customer insert(Customer customer) {
+        return null;
+    }
+
+    @Override
+    public Customer update(Customer customer) {
+        return null;
+    }
+
+    @Override
+    public void deleteAll() {
+
+    }
+}
