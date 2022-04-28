@@ -64,7 +64,7 @@ public class DefaultWebtoonService implements WebtoonService {
     @Override
     public void updateSavePath(UUID webtoonId, String newPath) {
         Webtoon webtoon = getVerifiedWebtoon(webtoonId);
-        webtoon.changeName(newPath);
+        webtoon.changePath(newPath);
         webtoonDao.update(webtoon);
     }
 

@@ -2,12 +2,12 @@ package com.programmers_solo.webtoonSub.webtoon.dao;
 
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
-import org.assertj.core.api.Assertions;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
+import org.mockito.internal.matchers.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -80,6 +80,42 @@ class WebtoonJdbcDaoTest {
                     .webtoonType(WebtoonType.FREE)
                     .createdAt(LocalDateTime.now())
                     .savePath("/저기서/요기에/저장경로2")
+                    .description("상세설명1")
+                    .build();
+            //then
+            assertThrows(RuntimeException.class, () -> webtoonDao.insert(webtoon));
+        }
+
+        @Test
+        @DisplayName("웹툰타입을 null로 저장 -> 에외 발생")
+        public void insertNullTypeTest() throws Exception {
+
+            //given
+            Webtoon webtoon = Webtoon.builder()
+                    .webtoonId(UUID.randomUUID())
+                    .webtoonName("웹툰2")
+                    .authorId(UUID.randomUUID())
+                    .webtoonType(null)
+                    .createdAt(LocalDateTime.now())
+                    .savePath("/저기서/요기에/저장경로2")
+                    .description("상세설명1")
+                    .build();
+            //then
+            assertThrows(RuntimeException.class, () -> webtoonDao.insert(webtoon));
+        }
+
+        @Test
+        @DisplayName("웹툰경로를 null로 저장 -> 에외 발생")
+        public void insertNullPathTest() throws Exception {
+
+            //given
+            Webtoon webtoon = Webtoon.builder()
+                    .webtoonId(UUID.randomUUID())
+                    .webtoonName("웹툰2")
+                    .authorId(UUID.randomUUID())
+                    .webtoonType(WebtoonType.FREE)
+                    .createdAt(LocalDateTime.now())
+                    .savePath(null)
                     .description("상세설명1")
                     .build();
             //then
