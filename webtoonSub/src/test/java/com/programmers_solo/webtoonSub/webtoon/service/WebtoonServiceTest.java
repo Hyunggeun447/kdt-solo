@@ -8,7 +8,6 @@ import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,9 +31,9 @@ class WebtoonServiceTest {
         defaultWebtoon = webtoonService.createWebtoon("기본웹툰1", "/여기/저기/저장", UUID.randomUUID(), WebtoonType.FREE);
         webtoonService.createWebtoon("기본웹툰2", "/여기/저기/저장", UUID.randomUUID(), WebtoonType.FREE);
         webtoonService.createWebtoon("기본웹툰3", "/저기/여기/저장", UUID.randomUUID(), WebtoonType.CHARGED_TWO_HUNDREDS);
-        webtoonService.createWebtoon("기본웹툰4", "/여기/저장", UUID.randomUUID(), WebtoonType.CHARGED_TWO_HUNDREDS);
+        webtoonService.createWebtoon("기본웹툰4", "/여기/저장", UUID.randomUUID(), WebtoonType.CHARGED_TWO_HUNDREDS,"35464");
         webtoonService.createWebtoon("기본웹툰5", "/여기/저장", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS);
-        webtoonService.createWebtoon("기본웹툰6", "/여기/저기", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS);
+        webtoonService.createWebtoon("기본웹툰6", "/여기/저기", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS,"123456");
         defaultWebtoonId = defaultWebtoon.getWebtoonId();
     }
 
@@ -177,6 +176,42 @@ class WebtoonServiceTest {
         }
     }
 
+
+    @Nested
+    @DisplayName("웹툰 설명 수정")
+    class updateDescriptionTest {
+
+        @Test
+        @DisplayName("웹툰 설명 null인 데이터를 수정 성공")
+        public void updateDescriptionTest() throws Exception {
+
+            //given
+            String newDescription = "새로운 설명";
+
+            //when
+            webtoonService.updateDescription(defaultWebtoonId, newDescription);
+            Optional<Webtoon> byId = webtoonDao.findById(defaultWebtoonId);
+
+            //then
+            assertThat(byId.get().getDescription()).isEqualTo(newDescription);
+        }
+
+        @Test
+        @DisplayName("웹툰 설명 수정 성공")
+        public void updateFree() throws Exception {
+
+            //given
+            String newDescription = "새로운 설명";
+            Webtoon webtoon = webtoonService.createWebtoon("테스트웹툰6", "/여기/저기", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS,"기존 설명");
+
+            //when
+            webtoonService.updateDescription(webtoon.getWebtoonId(), newDescription);
+
+            //then
+            assertThat(webtoonDao.findById(webtoon.getWebtoonId()).get().getDescription()).isEqualTo(newDescription);
+        }
+    }
+
     @Nested
     @DisplayName("전체조회")
     class findAllTest {
@@ -265,5 +300,4 @@ class WebtoonServiceTest {
             assertThat(webtoonsBySearchText.size()).isEqualTo(16);
         }
     }
-
 }
