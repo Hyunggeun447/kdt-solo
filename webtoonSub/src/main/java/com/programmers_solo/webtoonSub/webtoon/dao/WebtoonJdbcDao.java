@@ -20,18 +20,20 @@ public class WebtoonJdbcDao implements WebtoonDao{
 
     private final NamedParameterJdbcTemplate jdbcTemplate;
 
-    @Override
-    public List<Webtoon> findAll() {
-        return jdbcTemplate.query("SELECT * FROM webtoons", webtoonRowMapper);
-    }
-
+    private final String SELECT_ALL = "SELECT * FROM webtoons";
     private final String SELECT_BY_WEBTOON_ID_SQL = "SELECT * FROM webtoons WHERE webtoon_id = UUID_TO_BIN(:webtoonId)";
     private final String SELECT_BY_WEBTOON_NAME_SQL = "SELECT * FROM webtoons WHERE webtoon_name = :webtoonName";
     private final String SELECT_BY_AUTHOR_ID_SQL = "SELECT * FROM webtoons WHERE author_id = UUID_TO_BIN(:authorId)";
     private final String INSERT_WEBTOON_SQL = "INSERT INTO webtoons(webtoon_id, webtoon_name, save_path, author_id, webtoon_type, description, created_at, updated_at)" +
             " VALUES(UUID_TO_BIN(:webtoonId), :webtoonName, :savePath, UUID_TO_BIN(:authorId), :webtoonType, :description, :createdAt, :updatedAt)";
     private final String UPDATE_WEBTOON_SQL = "UPDATE webtoons SET webtoon_name = :webtoonName, save_path = :savePath, webtoon_type = :webtoonType, description = :description, updated_at = :updatedAt WHERE webtoon_id = UUID_TO_BIN(:webtoonId)";
+    private final String DELETE_ALL_WEBTOONS_SQL = "DELETE FROM webtoons";
     private final String SELECT_BY_SEARCH_TEXT_SQL = "SELECT * FROM webtoons WHERE webtoon_name LIKE :searchText";
+
+    @Override
+    public List<Webtoon> findAll() {
+        return jdbcTemplate.query(SELECT_ALL, webtoonRowMapper);
+    }
 
     @Override
     public Optional<Webtoon> findById(UUID webtoonId) {
@@ -72,8 +74,6 @@ public class WebtoonJdbcDao implements WebtoonDao{
         return webtoon;
     }
 
-
-
     @Override
     public Webtoon update(Webtoon webtoon) {
         int update = jdbcTemplate.update(UPDATE_WEBTOON_SQL, toWebtoonParamMap(webtoon));
@@ -85,7 +85,7 @@ public class WebtoonJdbcDao implements WebtoonDao{
 
     @Override
     public void deleteAll() {
-        jdbcTemplate.update("DELETE FROM webtoons", Collections.emptyMap());
+        jdbcTemplate.update(DELETE_ALL_WEBTOONS_SQL, Collections.emptyMap());
     }
 
     @Override

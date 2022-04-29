@@ -22,7 +22,6 @@ public class Customer {
     private String password;
     private long wallet;
     private LocalDateTime expirySubscriptionDate;
-    private List<UUID> boughtWebtoons = new ArrayList<>();
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime lastLoginAt;
@@ -47,14 +46,6 @@ public class Customer {
             throw new IllegalArgumentException("잔액이 모자랍니다");
         }
         this.wallet -= money;
-        this.updatedAt = LocalDateTime.now();
-    }
-
-    public void buyWebtoons(Webtoon... webtoons) {
-        for (Webtoon webtoon : webtoons) {
-            useWallet(webtoon.getWebtoonType().getPrice());
-            this.boughtWebtoons.add(webtoon.getWebtoonId());
-        }
         this.updatedAt = LocalDateTime.now();
     }
 
