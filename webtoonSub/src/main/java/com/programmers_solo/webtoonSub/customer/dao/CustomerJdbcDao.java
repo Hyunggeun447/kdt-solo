@@ -1,6 +1,7 @@
 package com.programmers_solo.webtoonSub.customer.dao;
 
 import com.programmers_solo.webtoonSub.customer.model.Customer;
+import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.RowMapper;
@@ -77,6 +78,29 @@ public class CustomerJdbcDao implements CustomerDao {
         jdbcTemplate.update(DELETE_ALL_CUSTOMERS_SQL, Collections.emptyMap());
     }
 
+    @Override
+    public Boolean checkExistRecordInWallet(Customer customer, Webtoon webtoon) {
+        Integer count = jdbcTemplate.queryForObject("select count(*) from webtoonWallet where customer_id = UUID_TO_BIN(:customerId) and webtoon_id = UUID_TO_BIN(:webtoonId)", toWalletParamMap(customer, webtoon), Integer.class);
+        return count != 0;
+    }
+
+    @Override
+    public void insertWebtoonWallet(Customer customer, Webtoon webtoon) {
+        jdbcTemplate.update("INSERT INTO webtoonWallet(customer_id, webtoon_id) VALUES (UUID_TO_BIN(:customerId), UUID_TO_BIN(:webtoonId))",
+                toWalletParamMap(customer, webtoon));
+    }
+
+    @Override
+    public void deleteWebtoonWallet(Customer customer, Webtoon webtoon) {
+        jdbcTemplate.update("DELETE FROM webtoonWallet WHERE customer_id = UUID_TO_BIN(:customerId) AND webtoon_id = UUID_TO_BIN(:webtoonId)",
+                toWalletParamMap(customer, webtoon));
+    }
+
+    @Override
+    public void deleteAllWebtoonWallet() {
+        jdbcTemplate.update("DELETE FROM webtoonWallet", Collections.emptyMap());
+    }
+
     private static final RowMapper<Customer> customerRowMapper = (resultSet, i) -> {
 
         UUID customerId = toUUID(resultSet.getBytes("customer_id"));
@@ -110,6 +134,13 @@ public class CustomerJdbcDao implements CustomerDao {
         paramMap.put("createdAt", customer.getCreatedAt());
         paramMap.put("updatedAt", customer.getUpdatedAt());
         paramMap.put("lastLoginAt", customer.getLastLoginAt());
+        return paramMap;
+    }
+
+    private Map<String, Object> toWalletParamMap(Customer customer, Webtoon webtoon) {
+        HashMap<String, Object> paramMap = new HashMap<>();
+        paramMap.put("customerId", customer.getCustomerId().toString().getBytes());
+        paramMap.put("webtoonId", webtoon.getWebtoonId().toString().getBytes());
         return paramMap;
     }
 

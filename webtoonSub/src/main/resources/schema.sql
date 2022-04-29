@@ -28,5 +28,10 @@ create table customers
         unique (customer_email)
 );
 
+create table webtoonWallet
+(
+    customer_id binary(16) not null,
+    webtoon_id  binary(16) not null
+);
 
 

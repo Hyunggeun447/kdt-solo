@@ -1,6 +1,8 @@
 package com.programmers_solo.webtoonSub.customer.dao;
 
 import com.programmers_solo.webtoonSub.customer.model.Customer;
+import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
+import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +25,7 @@ class CustomerDaoTest {
     @BeforeEach
     void setup() {
         customerDao.deleteAll();
+        customerDao.deleteAllWebtoonWallet();
         defaultCustomer = Customer.builder()
                 .customerId(UUID.randomUUID())
                 .customerEmail("customer@naver.com")
@@ -148,5 +151,42 @@ class CustomerDaoTest {
             //then
             assertThat(customerDao.findByEmail("customer@naver.com").get().getWallet()).isEqualTo(money);
         }
+    }
+
+    @Nested
+    @DisplayName("웹툰 지갑 테스트")
+    class webtoonWalletTest {
+
+        @Test
+        @DisplayName("웹툰 구입")
+        public void Test() throws Exception {
+
+            //given
+            Customer customer = Customer.builder()
+                    .customerId(UUID.randomUUID())
+                    .customerEmail("newCustomer@naver.com")
+                    .password("password")
+                    .createdAt(LocalDateTime.now())
+                    .build();
+
+            Webtoon webtoon = Webtoon.builder()
+                    .webtoonId(UUID.randomUUID())
+                    .webtoonName("웹툰1")
+                    .authorId(UUID.randomUUID())
+                    .webtoonType(WebtoonType.FREE)
+                    .createdAt(LocalDateTime.now())
+                    .savePath("/여기서/조기에/저장경로")
+                    .description("상세설명")
+                    .build();
+            //when
+            customerDao.insertWebtoonWallet(customer, webtoon);
+            Boolean aBoolean = customerDao.checkExistRecordInWallet(customer, webtoon);
+            System.out.println("aBoolean = " + aBoolean);
+            customerDao.deleteWebtoonWallet(customer, webtoon);
+            Boolean aBoolean1 = customerDao.checkExistRecordInWallet(customer, webtoon);
+            System.out.println("aBoolean1 = " + aBoolean1);
+            //then
+        }
+
     }
 }

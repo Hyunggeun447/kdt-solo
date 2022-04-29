@@ -55,46 +55,33 @@ public class DefaultWebtoonService implements WebtoonService {
     }
 
     @Override
-    public void updateName(UUID webtoonId, String newName) {
-        Webtoon webtoon = getVerifiedWebtoon(webtoonId);
+    public void updateName(Webtoon webtoon, String newName) {
         webtoon.changeName(newName);
         webtoonDao.update(webtoon);
     }
 
     @Override
-    public void updateSavePath(UUID webtoonId, String newPath) {
-        Webtoon webtoon = getVerifiedWebtoon(webtoonId);
+    public void updateSavePath(Webtoon webtoon, String newPath) {
         webtoon.changePath(newPath);
         webtoonDao.update(webtoon);
     }
 
 
     @Override
-    public void updateFreePrice(UUID webtoonId) {
-        Webtoon webtoon = getVerifiedWebtoon(webtoonId);
+    public void updateFreePrice(Webtoon webtoon) {
         webtoon.changeFree();
         webtoonDao.update(webtoon);
     }
 
     @Override
-    public void updateWebtoonType(UUID webtoonId, WebtoonType newType) {
-        Webtoon webtoon = getVerifiedWebtoon(webtoonId);
+    public void updateWebtoonType(Webtoon webtoon, WebtoonType newType) {
         webtoon.changeType(newType);
         webtoonDao.update(webtoon);
     }
 
     @Override
-    public void updateDescription(UUID webtoonId, String description) {
-        Webtoon webtoon = getVerifiedWebtoon(webtoonId);
+    public void updateDescription(Webtoon webtoon, String description) {
         webtoon.changeDescription(description);
         webtoonDao.update(webtoon);
-    }
-
-    private Webtoon getVerifiedWebtoon(UUID webtoonId) {
-        Optional<Webtoon> webtoon = webtoonDao.findById(webtoonId);
-        if (webtoon.isEmpty()) {
-            throw new IllegalArgumentException("존재하지 않는 웹툰입니다.");
-        }
-        return webtoon.get();
     }
 }
