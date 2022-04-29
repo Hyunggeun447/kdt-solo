@@ -3,7 +3,6 @@ package com.programmers_solo.webtoonSub.customer.service;
 import com.programmers_solo.webtoonSub.customer.dao.CustomerDao;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
-import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +39,15 @@ public class DefaultCustomerService implements CustomerService {
     //todo
     @Override
     public Customer loginCustomer(String customerEmail, String password) {
-        return null;
+        Optional<Customer> byEmail = customerDao.findByEmail(customerEmail);
+        if (byEmail.isEmpty()) {
+            throw new RuntimeException("존재하지 않는 고객입니다.");
+        }
+        if (byEmail.get().getPassword().equals(password)) {
+            return byEmail.get();
+        } else {
+            throw new RuntimeException("비밀번호 오류입니다.");
+        }
     }
 
     @Override
@@ -71,5 +78,4 @@ public class DefaultCustomerService implements CustomerService {
         customerDao.insertWebtoonWallet(customer, webtoon);
         customerDao.update(customer);
     }
-
 }
