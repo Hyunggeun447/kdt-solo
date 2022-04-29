@@ -1,10 +1,7 @@
 package com.programmers_solo.webtoonSub.customer.model;
 
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -20,7 +17,7 @@ public class Customer {
     private final UUID customerId;
     private final String customerEmail;
     private String password;
-    private long wallet;
+    private long wallet = 0;
     private LocalDateTime expirySubscriptionDate;
     private final LocalDateTime createdAt;
     private LocalDateTime updatedAt;
@@ -31,8 +28,15 @@ public class Customer {
         this.updatedAt = LocalDateTime.now();
     }
 
+    //todo // test
     public void subscribe(int months) {
-        this.expirySubscriptionDate = LocalDateTime.now().plusMonths(months);
+        if (this.expirySubscriptionDate == null || this.expirySubscriptionDate.isBefore(LocalDateTime.now())) {
+            this.expirySubscriptionDate = LocalDateTime.now().plusMonths(months);
+        } else {
+            this.expirySubscriptionDate = this.expirySubscriptionDate.plusMonths(months);
+        }
+
+
         this.updatedAt = LocalDateTime.now();
     }
 
