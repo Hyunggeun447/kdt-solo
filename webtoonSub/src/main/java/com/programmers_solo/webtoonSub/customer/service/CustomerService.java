@@ -10,7 +10,10 @@ public interface CustomerService {
 
     List<Customer> getAllCustomers();
 
+    Customer getCustomerById(UUID customerId);
+
     Customer createCustomer(String customerEmail, String password);
+
 
     Customer loginCustomer(String customerEmail, String password);
 
@@ -20,5 +23,7 @@ public interface CustomerService {
 
     void chargeWallet(UUID customerId, long money);
 
-    void buyWebtoon(UUID customerId, UUID webtoonId);
+    void buyWebtoon(Customer customer, Webtoon webtoon);
+
+    boolean checkBoughtRecord(Customer customer, Webtoon webtoon);
 }

@@ -28,6 +28,11 @@ public class DefaultCustomerService implements CustomerService {
     }
 
     @Override
+    public Customer getCustomerById(UUID customerId) {
+        return findByCustomerId(customerId);
+    }
+
+    @Override
     public Customer createCustomer(String customerEmail, String password) {
         Customer customer = Customer.builder()
                 .customerId(UUID.randomUUID())
@@ -75,16 +80,18 @@ public class DefaultCustomerService implements CustomerService {
 
     //todo //예외처리 확인
     @Override
-    public void buyWebtoon(UUID customerId, UUID webtoonId) {
-        Customer customer = findByCustomerId(customerId);
-        Webtoon webtoon = findByWebtoonId(webtoonId);
-
+    public void buyWebtoon(Customer customer, Webtoon webtoon) {
         if (customerDao.checkExistRecordInWallet(customer, webtoon)) {
             throw new RuntimeException("이미 구매 이력이 있습니다");
         }
         customer.useWallet(webtoon.getWebtoonType().getPrice());
         customerDao.insertWebtoonWallet(customer, webtoon);
         customerDao.update(customer);
+    }
+
+    @Override
+    public boolean checkBoughtRecord(Customer customer, Webtoon webtoon) {
+        return customerDao.checkExistRecordInWallet(customer, webtoon);
     }
 
     private Customer findByCustomerId(UUID customerId) {
@@ -102,4 +109,6 @@ public class DefaultCustomerService implements CustomerService {
         }
         return byId.get();
     }
+
+
 }

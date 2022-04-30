@@ -1,5 +1,6 @@
 package com.programmers_solo.webtoonSub.webtoon.service;
 
+import com.programmers_solo.webtoonSub.customer.dao.CustomerDao;
 import com.programmers_solo.webtoonSub.webtoon.dao.WebtoonDao;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
@@ -16,6 +17,15 @@ import java.util.UUID;
 public class DefaultWebtoonService implements WebtoonService {
 
     private final WebtoonDao webtoonDao;
+
+    @Override
+    public Webtoon getByWebtoonName(String WebtoonName) {
+        Optional<Webtoon> byName = webtoonDao.findByName(WebtoonName);
+        if (byName.isEmpty()) {
+            throw new IllegalArgumentException("웹툰이 존재하지 않습니다.");
+        }
+        return byName.get();
+    }
 
     @Override
     public List<Webtoon> getWebtoonsBySearchText(String searchText) {
