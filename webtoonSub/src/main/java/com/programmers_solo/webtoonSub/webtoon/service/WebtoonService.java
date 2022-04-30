@@ -16,13 +16,13 @@ public interface WebtoonService {
 
     Webtoon createWebtoon(String webtoonName, String savePath, UUID authorId, WebtoonType webtoonType, String description);
 
-    void updateName(Webtoon webtoon, String newName);
+    void updateName(UUID webtoonId, String newName);
 
-    void updateSavePath(Webtoon webtoon, String newPath);
+    void updateSavePath(UUID webtoonId, String newPath);
 
-    void updateFreePrice(Webtoon webtoon);
+    void updateFreePrice(UUID webtoonId);
 
-    void updateWebtoonType(Webtoon webtoon, WebtoonType newType);
+    void updateWebtoonType(UUID webtoonId, WebtoonType newType);
 
-    void updateDescription(Webtoon webtoon, String description);
+    void updateDescription(UUID webtoonId, String description);
 }

@@ -14,11 +14,11 @@ public interface CustomerService {
 
     Customer loginCustomer(String customerEmail, String password);
 
-    void changePassword(Customer customer, String newPassword);
+    void changePassword(UUID customerId, String newPassword);
 
-    void subscribe(Customer customer, int months);
+    void subscribe(UUID customerId, int months);
 
-    void chargeWallet(Customer customer, long money);
+    void chargeWallet(UUID customerId, long money);
 
-    void buyWebtoon(Customer customer, Webtoon webtoon);
+    void buyWebtoon(UUID customerId, UUID webtoonId);
 }

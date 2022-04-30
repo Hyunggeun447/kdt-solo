@@ -87,7 +87,7 @@ class WebtoonServiceTest {
             String newName = "새 웹툰 이름";
 
             //when
-            webtoonService.updateName(defaultWebtoon, newName);
+            webtoonService.updateName(defaultWebtoon.getWebtoonId(), newName);
             Optional<Webtoon> byId = webtoonDao.findById(defaultWebtoonId);
 
             //then
@@ -104,7 +104,7 @@ class WebtoonServiceTest {
             webtoonService.createWebtoon(newName, "/여기/저기/저장", UUID.randomUUID(), WebtoonType.FREE);
 
             //then
-            assertThrows(RuntimeException.class, () -> webtoonService.updateName(defaultWebtoon, newName));
+            assertThrows(RuntimeException.class, () -> webtoonService.updateName(defaultWebtoon.getWebtoonId(), newName));
         }
     }
 
@@ -120,7 +120,7 @@ class WebtoonServiceTest {
             String newPath = "/새로/운/경로";
 
             //when
-            webtoonService.updateSavePath(defaultWebtoon, newPath);
+            webtoonService.updateSavePath(defaultWebtoon.getWebtoonId(), newPath);
             Optional<Webtoon> byId = webtoonDao.findById(defaultWebtoonId);
 
             //then
@@ -136,7 +136,7 @@ class WebtoonServiceTest {
             String newPath = "/여기/저기/저장";
 
             //when
-            webtoonService.updateSavePath(defaultWebtoon, newPath);
+            webtoonService.updateSavePath(defaultWebtoon.getWebtoonId(), newPath);
 
             //then
             assertThat(webtoonDao.findById(defaultWebtoonId).get().getSavePath()).isEqualTo(newPath);
@@ -155,7 +155,7 @@ class WebtoonServiceTest {
             WebtoonType newWebtoonType = WebtoonType.CHARGED_THREE_HUNDREDS;
 
             //when
-            webtoonService.updateWebtoonType(defaultWebtoon, newWebtoonType);
+            webtoonService.updateWebtoonType(defaultWebtoon.getWebtoonId(), newWebtoonType);
             Optional<Webtoon> byId = webtoonDao.findById(defaultWebtoonId);
 
             //then
@@ -170,7 +170,7 @@ class WebtoonServiceTest {
             Webtoon typeThreeH = webtoonService.createWebtoon("테스트웹툰6", "/여기/저기", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS);
 
             //when
-            webtoonService.updateFreePrice(typeThreeH);
+            webtoonService.updateFreePrice(typeThreeH.getWebtoonId());
 
             //then
             assertThat(webtoonDao.findById(typeThreeH.getWebtoonId()).get().getWebtoonType()).isEqualTo(WebtoonType.FREE);
@@ -190,7 +190,7 @@ class WebtoonServiceTest {
             String newDescription = "새로운 설명";
 
             //when
-            webtoonService.updateDescription(defaultWebtoon, newDescription);
+            webtoonService.updateDescription(defaultWebtoon.getWebtoonId(), newDescription);
             Optional<Webtoon> byId = webtoonDao.findById(defaultWebtoonId);
 
             //then
@@ -206,7 +206,7 @@ class WebtoonServiceTest {
             Webtoon webtoon = webtoonService.createWebtoon("테스트웹툰6", "/여기/저기", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS,"기존 설명");
 
             //when
-            webtoonService.updateDescription(webtoon, newDescription);
+            webtoonService.updateDescription(webtoon.getWebtoonId(), newDescription);
 
             //then
             assertThat(webtoonDao.findById(webtoon.getWebtoonId()).get().getDescription()).isEqualTo(newDescription);
