@@ -1,6 +1,5 @@
 package com.programmers_solo.webtoonSub.webtoon.service;
 
-import com.programmers_solo.webtoonSub.customer.dao.CustomerDao;
 import com.programmers_solo.webtoonSub.webtoon.dao.WebtoonDao;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;

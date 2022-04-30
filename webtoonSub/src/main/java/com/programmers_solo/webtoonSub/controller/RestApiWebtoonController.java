@@ -10,7 +10,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -18,13 +17,13 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v2")
+@RequestMapping("/v1")
 public class RestApiWebtoonController {
 
     private final WebtoonService webtoonService;
     private final CustomerService customerService;
 
-    @GetMapping("/webtoons/")
+    @GetMapping("/webtoons")
     public List<Webtoon> findWebtoonList(@RequestParam Optional<String> searchText) {
         if (searchText.isEmpty()) {
             return webtoonService.getAllWebtoons();
@@ -48,7 +47,6 @@ public class RestApiWebtoonController {
         }
 
         throw new RuntimeException("볼 수 있는 권한이 없습니다.");
-
     }
 
     @PostMapping("/enroll")
