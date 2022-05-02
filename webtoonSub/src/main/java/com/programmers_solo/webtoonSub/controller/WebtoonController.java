@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
@@ -50,13 +51,18 @@ public class WebtoonController {
             return "webtoon/webtoon";
         }
 
-        UUID customerId = (UUID) request.getSession().getAttribute("customerId");
-        Customer customer = customerService.getCustomerById(customerId);
+
+        Customer customer = (Customer) request.getSession().getAttribute("loginCustomer");
+        if (customer.getExpirySubscriptionDate() == null) {
+//            throw new RuntimeException("볼 수 있는 권한이 없습니다.");
+            return "redirect:/v1/webtoons";
+        }
         if (customer.getExpirySubscriptionDate().isAfter(LocalDateTime.now()) || customerService.checkBoughtRecord(customer, webtoon)) {
             model.addAttribute("webtoon", webtoon);
             return "webtoon/webtoon";
         }
-        throw new RuntimeException("볼 수 있는 권한이 없습니다.");
+//        throw new RuntimeException("볼 수 있는 권한이 없습니다.");
+        return "redirect:/v1/webtoons";
     }
 
     @GetMapping("/enroll")
