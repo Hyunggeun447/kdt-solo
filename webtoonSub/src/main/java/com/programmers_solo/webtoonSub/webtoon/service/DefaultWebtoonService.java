@@ -4,6 +4,7 @@ import com.programmers_solo.webtoonSub.webtoon.dao.WebtoonDao;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class DefaultWebtoonService implements WebtoonService {
 
     private final WebtoonDao webtoonDao;
@@ -46,7 +48,7 @@ public class DefaultWebtoonService implements WebtoonService {
         if (!file.isEmpty()) {
             String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
             String fileName = uuid + "_" + file.getOriginalFilename();
-            File saveFile = new File(projectPath, fileName);
+            File saveFile = new File(projectPath);
             try {
                 file.transferTo(saveFile);
             } catch (IOException e) {
@@ -80,7 +82,6 @@ public class DefaultWebtoonService implements WebtoonService {
             }
             savePath = "/files/" + fileName;
         }
-
         Webtoon webtoon = Webtoon.builder()
                 .webtoonId(uuid)
                 .webtoonName(webtoonName)
@@ -90,6 +91,7 @@ public class DefaultWebtoonService implements WebtoonService {
                 .description(description)
                 .createdAt(LocalDateTime.now())
                 .build();
+
         return webtoonDao.insert(webtoon);
     }
 
@@ -127,6 +129,11 @@ public class DefaultWebtoonService implements WebtoonService {
         Webtoon webtoon = findByWebtoonId(webtoonId);
         webtoon.changeDescription(description);
         webtoonDao.update(webtoon);
+    }
+
+    @Override
+    public void deleteAll() {
+        webtoonDao.deleteAll();
     }
 
     private Webtoon findByWebtoonId(UUID webtoonId) {

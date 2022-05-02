@@ -1,9 +1,10 @@
+-- auto-generated definition
 create table webtoons
 (
     webtoon_id   binary(16)   not null
         primary key,
     webtoon_name varchar(30)  not null,
-    save_path    varchar(200) not null,
+    save_path    varchar(200) null,
     author_id    binary(16)   not null,
     webtoon_type varchar(50)  not null,
     description  varchar(500) null,

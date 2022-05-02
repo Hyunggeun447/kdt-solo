@@ -29,4 +29,6 @@ public interface WebtoonService {
     void updateWebtoonType(UUID webtoonId, WebtoonType newType);
 
     void updateDescription(UUID webtoonId, String description);
+
+    void deleteAll();
 }

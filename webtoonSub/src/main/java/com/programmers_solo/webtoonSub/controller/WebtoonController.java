@@ -7,56 +7,78 @@ import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
 import com.programmers_solo.webtoonSub.webtoon.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 @RequestMapping("/v1")
-public class RestApiWebtoonController {
+@Slf4j
+public class WebtoonController {
 
     private final WebtoonService webtoonService;
     private final CustomerService customerService;
 
+    @ModelAttribute("webtoonTypes")
+    public WebtoonType[] webtoonTypes() {
+        return WebtoonType.values();
+    }
+
     @GetMapping("/webtoons")
-    public List<Webtoon> findWebtoonList(@RequestParam Optional<String> searchText) {
+    public String findWebtoonList(@RequestParam Optional<String> searchText, Model model) {
         if (searchText.isEmpty()) {
-            return webtoonService.getAllWebtoons();
+            model.addAttribute("webtoonList", webtoonService.getAllWebtoons());
         } else {
-            return webtoonService.getWebtoonsBySearchText(searchText.get());
+            model.addAttribute("webtoonList", webtoonService.getWebtoonsBySearchText(searchText.get()));
         }
+        return "webtoon/webtoonList";
     }
 
     @GetMapping("/webtoons/{webtoonName}")
-    public Webtoon findWebtoon(@PathVariable String webtoonName, HttpServletRequest request) {
+    public String findWebtoon(@PathVariable String webtoonName, HttpServletRequest request, Model model) {
         Webtoon webtoon = webtoonService.getByWebtoonName(webtoonName);
         if (webtoon.getWebtoonType().equals(WebtoonType.FREE)) {
-            return webtoon;
+            model.addAttribute("webtoon", webtoon);
+            return "webtoon/webtoon";
         }
 
         UUID customerId = (UUID) request.getSession().getAttribute("customerId");
         Customer customer = customerService.getCustomerById(customerId);
         if (customer.getExpirySubscriptionDate().isAfter(LocalDateTime.now()) || customerService.checkBoughtRecord(customer, webtoon)) {
-            return webtoon;
+            model.addAttribute("webtoon", webtoon);
+            return "webtoon/webtoon";
         }
         throw new RuntimeException("볼 수 있는 권한이 없습니다.");
     }
 
+    @GetMapping("/enroll")
+    public String createWebtoon(@ModelAttribute("createWebtoonDto") CreateWebtoonDto createWebtoonDto) {
+        return "webtoon/createForm";
+    }
+
     @PostMapping("/enroll")
-    public Webtoon createWebtoon(@RequestBody CreateWebtoonDto createWebtoonDto, MultipartFile file) {
-        return webtoonService.createWebtoon(
+    public String doCreateWebtoon(@ModelAttribute CreateWebtoonDto createWebtoonDto, @ModelAttribute MultipartFile file) {
+        webtoonService.createWebtoon(
                 createWebtoonDto.getWebtoonName(),
                 createWebtoonDto.getAuthorId(),
                 createWebtoonDto.getWebtoonType(),
                 createWebtoonDto.getDescription(),
                 file
         );
+        return "redirect:/v1/webtoons";
     }
 
+    @PostMapping("/delete")
+    public String deleteAll() {
+        webtoonService.deleteAll();
+        return "redirect:/v1/webtoons";
+    }
 }
