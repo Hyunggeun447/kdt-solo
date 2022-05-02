@@ -2,8 +2,10 @@ package com.programmers_solo.webtoonSub.webtoon.service;
 
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface WebtoonService {
@@ -14,9 +16,9 @@ public interface WebtoonService {
 
     List<Webtoon> getAllWebtoons();
 
-    Webtoon createWebtoon(String webtoonName, String savePath, UUID authorId, WebtoonType webtoonType);
+    Webtoon createWebtoon(String webtoonName, UUID authorId, WebtoonType webtoonType, MultipartFile file);
 
-    Webtoon createWebtoon(String webtoonName, String savePath, UUID authorId, WebtoonType webtoonType, String description);
+    Webtoon createWebtoon(String webtoonName, UUID authorId, WebtoonType webtoonType, String description, MultipartFile file);
 
     void updateName(UUID webtoonId, String newName);
 

@@ -5,7 +5,10 @@ import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -37,9 +40,22 @@ public class DefaultWebtoonService implements WebtoonService {
     }
 
     @Override
-    public Webtoon createWebtoon(String webtoonName, String savePath, UUID authorId, WebtoonType webtoonType) {
+    public Webtoon createWebtoon(String webtoonName, UUID authorId, WebtoonType webtoonType, MultipartFile file) {
+        UUID uuid = UUID.randomUUID();
+        String savePath = null;
+        if (!file.isEmpty()) {
+            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
+            String fileName = uuid + "_" + file.getOriginalFilename();
+            File saveFile = new File(projectPath, fileName);
+            try {
+                file.transferTo(saveFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            savePath = "/files/" + fileName;
+        }
         Webtoon webtoon = Webtoon.builder()
-                .webtoonId(UUID.randomUUID())
+                .webtoonId(uuid)
                 .webtoonName(webtoonName)
                 .savePath(savePath)
                 .authorId(authorId)
@@ -50,9 +66,23 @@ public class DefaultWebtoonService implements WebtoonService {
     }
 
     @Override
-    public Webtoon createWebtoon(String webtoonName, String savePath, UUID authorId, WebtoonType webtoonType, String description) {
+    public Webtoon createWebtoon(String webtoonName, UUID authorId, WebtoonType webtoonType, String description, MultipartFile file) {
+        UUID uuid = UUID.randomUUID();
+        String savePath = null;
+        if (!file.isEmpty()) {
+            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
+            String fileName = uuid + "_" + file.getOriginalFilename();
+            File saveFile = new File(projectPath, fileName);
+            try {
+                file.transferTo(saveFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            savePath = "/files/" + fileName;
+        }
+
         Webtoon webtoon = Webtoon.builder()
-                .webtoonId(UUID.randomUUID())
+                .webtoonId(uuid)
                 .webtoonName(webtoonName)
                 .savePath(savePath)
                 .authorId(authorId)

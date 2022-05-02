@@ -7,6 +7,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -29,12 +30,12 @@ class WebtoonServiceTest {
     @BeforeEach
     void setup() {
         webtoonDao.deleteAll();
-        defaultWebtoon = webtoonService.createWebtoon("기본웹툰1", "/여기/저기/저장", UUID.randomUUID(), WebtoonType.FREE);
-        webtoonService.createWebtoon("기본웹툰2", "/여기/저기/저장", UUID.randomUUID(), WebtoonType.FREE);
-        webtoonService.createWebtoon("기본웹툰3", "/저기/여기/저장", UUID.randomUUID(), WebtoonType.CHARGED_TWO_HUNDREDS);
-        webtoonService.createWebtoon("기본웹툰4", "/여기/저장", UUID.randomUUID(), WebtoonType.CHARGED_TWO_HUNDREDS,"35464");
-        webtoonService.createWebtoon("기본웹툰5", "/여기/저장", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS);
-        webtoonService.createWebtoon("기본웹툰6", "/여기/저기", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS,"123456");
+        defaultWebtoon = webtoonService.createWebtoon("기본웹툰1", UUID.randomUUID(), WebtoonType.FREE, null);
+        webtoonService.createWebtoon("기본웹툰2", UUID.randomUUID(), WebtoonType.FREE, null);
+        webtoonService.createWebtoon("기본웹툰3", UUID.randomUUID(), WebtoonType.CHARGED_TWO_HUNDREDS, null);
+        webtoonService.createWebtoon("기본웹툰4", UUID.randomUUID(), WebtoonType.CHARGED_TWO_HUNDREDS, "35464", null);
+        webtoonService.createWebtoon("기본웹툰5", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS, null);
+        webtoonService.createWebtoon("기본웹툰6", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS, "123456", null);
         defaultWebtoonId = defaultWebtoon.getWebtoonId();
     }
 
@@ -50,7 +51,7 @@ class WebtoonServiceTest {
         public void createWebtoon() throws Exception {
 
             //when
-            Webtoon webtoon = webtoonService.createWebtoon("웹툰만들기", "경로경로", UUID.randomUUID(), WebtoonType.FREE);
+            Webtoon webtoon = webtoonService.createWebtoon("웹툰만들기", UUID.randomUUID(), WebtoonType.FREE, null);
 
             //then
             MatcherAssert.assertThat(webtoon, samePropertyValuesAs(webtoonDao.findById(webtoon.getWebtoonId()).get()));
@@ -61,7 +62,7 @@ class WebtoonServiceTest {
         public void createSameNameWebtoon() throws Exception {
             //then
             assertThrows(RuntimeException.class, () ->
-                    webtoonService.createWebtoon("기본웹툰1", "경로경로", UUID.randomUUID(), WebtoonType.FREE)
+                    webtoonService.createWebtoon("기본웹툰1", UUID.randomUUID(), WebtoonType.FREE, null)
             );
         }
 
@@ -70,8 +71,9 @@ class WebtoonServiceTest {
         public void createNullNameWebtoon() throws Exception {
             //then
             assertThrows(RuntimeException.class, () ->
-                    webtoonService.createWebtoon(null, "경로경로", UUID.randomUUID(), WebtoonType.FREE)
+                    webtoonService.createWebtoon(null, UUID.randomUUID(), WebtoonType.FREE, null)
             );
+
         }
     }
 
@@ -101,7 +103,7 @@ class WebtoonServiceTest {
 
             //given
             String newName = "존재하는 이름";
-            webtoonService.createWebtoon(newName, "/여기/저기/저장", UUID.randomUUID(), WebtoonType.FREE);
+            webtoonService.createWebtoon(newName, UUID.randomUUID(), WebtoonType.FREE, null);
 
             //then
             assertThrows(RuntimeException.class, () -> webtoonService.updateName(defaultWebtoon.getWebtoonId(), newName));
@@ -167,7 +169,7 @@ class WebtoonServiceTest {
         public void updateFree() throws Exception {
 
             //given
-            Webtoon typeThreeH = webtoonService.createWebtoon("테스트웹툰6", "/여기/저기", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS);
+            Webtoon typeThreeH = webtoonService.createWebtoon("테스트웹툰6", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS, null);
 
             //when
             webtoonService.updateFreePrice(typeThreeH.getWebtoonId());
@@ -203,7 +205,7 @@ class WebtoonServiceTest {
 
             //given
             String newDescription = "새로운 설명";
-            Webtoon webtoon = webtoonService.createWebtoon("테스트웹툰6", "/여기/저기", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS,"기존 설명");
+            Webtoon webtoon = webtoonService.createWebtoon("테스트웹툰6", UUID.randomUUID(), WebtoonType.CHARGED_THREE_HUNDREDS, "기존 설명", null);
 
             //when
             webtoonService.updateDescription(webtoon.getWebtoonId(), newDescription);
@@ -239,7 +241,7 @@ class WebtoonServiceTest {
 
             //given
             for (int i = 0; i < 10; i++) {
-                webtoonService.createWebtoon("이런 저런 검색어 런저 런이" + i, "/path/" + i, UUID.randomUUID(), WebtoonType.FREE);
+                webtoonService.createWebtoon("이런 저런 검색어 런저 런이" + i, UUID.randomUUID(), WebtoonType.FREE, null);
             }
             String searchText = "검색어";
 
@@ -256,7 +258,7 @@ class WebtoonServiceTest {
 
             //given
             for (int i = 0; i < 10; i++) {
-                webtoonService.createWebtoon("이런 저런 검색어 런저 런이" + i, "/path/" + i, UUID.randomUUID(), WebtoonType.FREE);
+                webtoonService.createWebtoon("이런 저런 검색어 런저 런이" + i, UUID.randomUUID(), WebtoonType.FREE, null);
             }
             String searchText = "어색검";
 
@@ -273,7 +275,7 @@ class WebtoonServiceTest {
 
             //given
             for (int i = 0; i < 10; i++) {
-                webtoonService.createWebtoon("이런 저런 검색어 런저 런이" + i, "/path/" + i, UUID.randomUUID(), WebtoonType.FREE);
+                webtoonService.createWebtoon("이런 저런 검색어 런저 런이" + i, UUID.randomUUID(), WebtoonType.FREE, null);
             }
             String searchText = null;
 
@@ -290,7 +292,7 @@ class WebtoonServiceTest {
 
             //given
             for (int i = 0; i < 10; i++) {
-                webtoonService.createWebtoon("이런 저런 검색어 런저 런이" + i, "/path/" + i, UUID.randomUUID(), WebtoonType.FREE);
+                webtoonService.createWebtoon("이런 저런 검색어 런저 런이" + i, UUID.randomUUID(), WebtoonType.FREE, null);
             }
             String searchText = "";
 

@@ -8,6 +8,7 @@ import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
 import com.programmers_solo.webtoonSub.webtoon.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -32,7 +33,7 @@ public class RestApiWebtoonController {
         }
     }
 
-    @GetMapping("webtoons/{webtoonName}")
+    @GetMapping("/webtoons/{webtoonName}")
     public Webtoon findWebtoon(@PathVariable String webtoonName, HttpServletRequest request) {
         Webtoon webtoon = webtoonService.getByWebtoonName(webtoonName);
         if (webtoon.getWebtoonType().equals(WebtoonType.FREE)) {
@@ -40,23 +41,22 @@ public class RestApiWebtoonController {
         }
 
         UUID customerId = (UUID) request.getSession().getAttribute("customerId");
-
         Customer customer = customerService.getCustomerById(customerId);
         if (customer.getExpirySubscriptionDate().isAfter(LocalDateTime.now()) || customerService.checkBoughtRecord(customer, webtoon)) {
             return webtoon;
         }
-
         throw new RuntimeException("볼 수 있는 권한이 없습니다.");
     }
 
     @PostMapping("/enroll")
-    public void createWebtoon(@RequestBody CreateWebtoonDto createWebtoonDto) {
-        webtoonService.createWebtoon(
+    public Webtoon createWebtoon(@RequestBody CreateWebtoonDto createWebtoonDto, MultipartFile file) {
+        return webtoonService.createWebtoon(
                 createWebtoonDto.getWebtoonName(),
-                createWebtoonDto.getSavePath(),
                 createWebtoonDto.getAuthorId(),
                 createWebtoonDto.getWebtoonType(),
-                createWebtoonDto.getDescription()
+                createWebtoonDto.getDescription(),
+                file
         );
     }
+
 }

@@ -15,7 +15,7 @@ public class RestApiCustomerController {
 
     private final CustomerService customerService;
 
-    @PostMapping("/enroll")
+    @PostMapping("/customer/enroll")
     public void createCustomer(@RequestBody CreateCustomerDto createCustomerDto) {
         customerService.createCustomer(createCustomerDto.getCustomerEmail(), createCustomerDto.getPassword());
     }
