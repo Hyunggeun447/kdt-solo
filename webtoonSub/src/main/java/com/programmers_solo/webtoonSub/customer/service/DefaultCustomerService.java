@@ -80,7 +80,8 @@ public class DefaultCustomerService implements CustomerService {
 
     //todo //예외처리 확인
     @Override
-    public void buyWebtoon(Customer customer, Webtoon webtoon) {
+    public void buyWebtoon(Customer customer, String webtoonName) {
+        Webtoon webtoon = webtoonDao.findByName(webtoonName).get();
         if (customerDao.checkExistRecordInWallet(customer, webtoon)) {
             throw new RuntimeException("이미 구매 이력이 있습니다");
         }

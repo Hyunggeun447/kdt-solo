@@ -35,15 +35,19 @@ public class LoginController {
             return "redirect:/login";
         }
 
-        Customer customer = customerService.loginCustomer(loginForm.getCustomerEmail(), loginForm.getPassword());
+        try {
+            Customer customer = customerService.loginCustomer(loginForm.getCustomerEmail(), loginForm.getPassword());
 
-        if (customer == null) {
-            bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다");
-            return "login/loginForm";
+            if (customer == null) {
+                bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다");
+                return "login/loginForm";
+            }
+
+            HttpSession session = request.getSession();
+            session.setAttribute("loginCustomer", customer);
+        } catch (RuntimeException e) {
+            return "redirect:/login";
         }
-
-        HttpSession session = request.getSession();
-        session.setAttribute("loginCustomer", customer);
 
         return "redirect:" + redirectURL;
     }

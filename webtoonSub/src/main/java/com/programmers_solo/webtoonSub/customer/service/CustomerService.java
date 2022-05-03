@@ -14,7 +14,6 @@ public interface CustomerService {
 
     Customer createCustomer(String customerEmail, String password);
 
-
     Customer loginCustomer(String customerEmail, String password);
 
     void changePassword(UUID customerId, String newPassword);
@@ -23,7 +22,7 @@ public interface CustomerService {
 
     void chargeWallet(UUID customerId, long money);
 
-    void buyWebtoon(Customer customer, Webtoon webtoon);
+    void buyWebtoon(Customer customer, String webtoonName);
 
     boolean checkBoughtRecord(Customer customer, Webtoon webtoon);
 }

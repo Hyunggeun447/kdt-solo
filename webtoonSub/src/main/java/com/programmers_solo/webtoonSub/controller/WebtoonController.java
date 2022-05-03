@@ -14,14 +14,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
-@RequestMapping("/v1")
 @Slf4j
 public class WebtoonController {
 
@@ -33,7 +30,7 @@ public class WebtoonController {
         return WebtoonType.values();
     }
 
-    @GetMapping("/webtoons")
+    @GetMapping("/")
     public String findWebtoonList(@RequestParam Optional<String> searchText, Model model) {
         if (searchText.isEmpty()) {
             model.addAttribute("webtoonList", webtoonService.getAllWebtoons());
@@ -43,34 +40,36 @@ public class WebtoonController {
         return "webtoon/webtoonList";
     }
 
-    @GetMapping("/webtoons/{webtoonName}")
+    @GetMapping("/{webtoonName}")
     public String findWebtoon(@PathVariable String webtoonName, HttpServletRequest request, Model model) {
         Webtoon webtoon = webtoonService.getByWebtoonName(webtoonName);
+
         if (webtoon.getWebtoonType().equals(WebtoonType.FREE)) {
             model.addAttribute("webtoon", webtoon);
             return "webtoon/webtoon";
         }
-
-
         Customer customer = (Customer) request.getSession().getAttribute("loginCustomer");
+
+        if (request.getSession().getAttribute("loginCustomer") == null) {
+            return "redirect:/login";
+        }
         if (customer.getExpirySubscriptionDate() == null) {
-//            throw new RuntimeException("볼 수 있는 권한이 없습니다.");
-            return "redirect:/v1/webtoons";
+            return "redirect:/buy?webtoonName=" + webtoonName;
+
         }
         if (customer.getExpirySubscriptionDate().isAfter(LocalDateTime.now()) || customerService.checkBoughtRecord(customer, webtoon)) {
             model.addAttribute("webtoon", webtoon);
             return "webtoon/webtoon";
         }
-//        throw new RuntimeException("볼 수 있는 권한이 없습니다.");
-        return "redirect:/v1/webtoons";
+        return "redirect:/buy?webtoonName=" + webtoonName;
     }
 
-    @GetMapping("/enroll")
+    @GetMapping("/webtoon/enroll")
     public String createWebtoon(@ModelAttribute("createWebtoonDto") CreateWebtoonDto createWebtoonDto) {
         return "webtoon/createForm";
     }
 
-    @PostMapping("/enroll")
+    @PostMapping("/webtoon/enroll")
     public String doCreateWebtoon(@ModelAttribute CreateWebtoonDto createWebtoonDto, @ModelAttribute MultipartFile file) {
         webtoonService.createWebtoon(
                 createWebtoonDto.getWebtoonName(),
@@ -79,12 +78,14 @@ public class WebtoonController {
                 createWebtoonDto.getDescription(),
                 file
         );
-        return "redirect:/v1/webtoons";
+        return "redirect:/webtoons";
     }
+
+
 
     @PostMapping("/delete")
     public String deleteAll() {
         webtoonService.deleteAll();
-        return "redirect:/v1/webtoons";
+        return "redirect:/webtoons";
     }
 }
