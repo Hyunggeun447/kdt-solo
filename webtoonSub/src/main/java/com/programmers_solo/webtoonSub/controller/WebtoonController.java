@@ -20,6 +20,7 @@ import java.util.Optional;
 @Controller
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/webtoon")
 public class WebtoonController {
 
     private final WebtoonService webtoonService;
@@ -30,46 +31,55 @@ public class WebtoonController {
         return WebtoonType.values();
     }
 
-    @GetMapping("/")
-    public String findWebtoonList(@RequestParam Optional<String> searchText, Model model) {
+    @GetMapping
+    public String findWebtoonList(@SessionAttribute(name = "loginCustomer", required = false) Customer loginCustomer,
+                                  @RequestParam Optional<String> searchText,
+                                  Model model) {
+
         if (searchText.isEmpty()) {
             model.addAttribute("webtoonList", webtoonService.getAllWebtoons());
         } else {
             model.addAttribute("webtoonList", webtoonService.getWebtoonsBySearchText(searchText.get()));
         }
+        if (loginCustomer == null) {
+            return "webtoon/webtoonListNotLogin";
+        }
         return "webtoon/webtoonList";
+
     }
 
     @GetMapping("/{webtoonName}")
-    public String findWebtoon(@PathVariable String webtoonName, HttpServletRequest request, Model model) {
+    public String findWebtoon(@SessionAttribute(name="loginCustomer", required = false) Customer loginCustomer, @PathVariable String webtoonName, HttpServletRequest request, Model model) {
         Webtoon webtoon = webtoonService.getByWebtoonName(webtoonName);
 
         if (webtoon.getWebtoonType().equals(WebtoonType.FREE)) {
             model.addAttribute("webtoon", webtoon);
             return "webtoon/webtoon";
         }
-        Customer customer = (Customer) request.getSession().getAttribute("loginCustomer");
 
         if (request.getSession().getAttribute("loginCustomer") == null) {
             return "redirect:/login";
         }
-        if (customer.getExpirySubscriptionDate() == null) {
-            return "redirect:/buy?webtoonName=" + webtoonName;
 
+        Customer customer = customerService.getCustomerById(loginCustomer.getCustomerId());
+
+        try {
+            if (customerService.checkBoughtRecord(customer, webtoon) || customer.getExpirySubscriptionDate().isAfter(LocalDateTime.now())) {
+                model.addAttribute("webtoon", webtoon);
+                return "webtoon/webtoon";
+            }
+        } catch (RuntimeException e) {
+            log.info("구독한 기록 없음.");
         }
-        if (customer.getExpirySubscriptionDate().isAfter(LocalDateTime.now()) || customerService.checkBoughtRecord(customer, webtoon)) {
-            model.addAttribute("webtoon", webtoon);
-            return "webtoon/webtoon";
-        }
-        return "redirect:/buy?webtoonName=" + webtoonName;
+        return "redirect:/webtoon/buy?webtoonName=" + webtoonName;
     }
 
-    @GetMapping("/webtoon/enroll")
+    @GetMapping("/enroll")
     public String createWebtoon(@ModelAttribute("createWebtoonDto") CreateWebtoonDto createWebtoonDto) {
         return "webtoon/createForm";
     }
 
-    @PostMapping("/webtoon/enroll")
+    @PostMapping("/enroll")
     public String doCreateWebtoon(@ModelAttribute CreateWebtoonDto createWebtoonDto, @ModelAttribute MultipartFile file) {
         webtoonService.createWebtoon(
                 createWebtoonDto.getWebtoonName(),
@@ -78,14 +88,12 @@ public class WebtoonController {
                 createWebtoonDto.getDescription(),
                 file
         );
-        return "redirect:/webtoons";
+        return "redirect:/webtoon";
     }
-
-
 
     @PostMapping("/delete")
     public String deleteAll() {
         webtoonService.deleteAll();
-        return "redirect:/webtoons";
+        return "redirect:/webtoon";
     }
 }

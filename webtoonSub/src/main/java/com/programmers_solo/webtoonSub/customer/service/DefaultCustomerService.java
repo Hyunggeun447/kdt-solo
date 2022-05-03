@@ -58,36 +58,41 @@ public class DefaultCustomerService implements CustomerService {
     }
 
     @Override
-    public void changePassword(UUID customerId, String newPassword) {
+    public Customer changePassword(UUID customerId, String newPassword) {
         Customer customer = findByCustomerId(customerId);
         customer.changePassword(newPassword);
-        customerDao.update(customer);
+        return customerDao.update(customer);
     }
 
     @Override
-    public void subscribe(UUID customerId, int months) {
+    public Customer subscribe(UUID customerId, int months) {
         Customer customer = findByCustomerId(customerId);
         customer.subscribe(months);
-        customerDao.update(customer);
+        return customerDao.update(customer);
     }
 
     @Override
-    public void chargeWallet(UUID customerId, long money) {
+    public Customer chargeWallet(UUID customerId, long money) {
         Customer customer = findByCustomerId(customerId);
         customer.chargeWallet(money);
-        customerDao.update(customer);
+        return customerDao.update(customer);
     }
 
     //todo //예외처리 확인
     @Override
-    public void buyWebtoon(Customer customer, String webtoonName) {
+    public Customer buyWebtoon(UUID customerId, String webtoonName) {
+        if (webtoonDao.findByName(webtoonName).isEmpty()) {
+            throw new IllegalArgumentException("존재하지 않는 웹툰입니다.");
+        }
         Webtoon webtoon = webtoonDao.findByName(webtoonName).get();
+        Customer customer = getCustomerById(customerId);
+
         if (customerDao.checkExistRecordInWallet(customer, webtoon)) {
             throw new RuntimeException("이미 구매 이력이 있습니다");
         }
-        customer.useWallet(webtoon.getWebtoonType().getPrice());
+        customer.buyWebtoon(webtoon);
         customerDao.insertWebtoonWallet(customer, webtoon);
-        customerDao.update(customer);
+        return customerDao.update(customer);
     }
 
     @Override
@@ -110,6 +115,4 @@ public class DefaultCustomerService implements CustomerService {
         }
         return byId.get();
     }
-
-
 }

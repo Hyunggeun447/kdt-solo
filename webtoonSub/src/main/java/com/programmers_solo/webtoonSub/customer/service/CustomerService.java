@@ -16,13 +16,13 @@ public interface CustomerService {
 
     Customer loginCustomer(String customerEmail, String password);
 
-    void changePassword(UUID customerId, String newPassword);
+    Customer changePassword(UUID customerId, String newPassword);
 
-    void subscribe(UUID customerId, int months);
+    Customer subscribe(UUID customerId, int months);
 
-    void chargeWallet(UUID customerId, long money);
+    Customer chargeWallet(UUID customerId, long money);
 
-    void buyWebtoon(Customer customer, String webtoonName);
+    Customer buyWebtoon(UUID customerId, String webtoonName);
 
     boolean checkBoughtRecord(Customer customer, Webtoon webtoon);
 }

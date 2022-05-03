@@ -23,12 +23,14 @@ public class Customer {
     private LocalDateTime updatedAt;
     private LocalDateTime lastLoginAt;
 
+    private final int SUBSCRIBEAMOUNT = 3000;
+
+
     public void changePassword(String newPassword) {
         this.password = newPassword;
         this.updatedAt = LocalDateTime.now();
     }
 
-    //todo // test
     public void subscribe(int months) {
         if (this.expirySubscriptionDate == null || this.expirySubscriptionDate.isBefore(LocalDateTime.now())) {
             this.expirySubscriptionDate = LocalDateTime.now().plusMonths(months);
@@ -36,7 +38,7 @@ public class Customer {
             this.expirySubscriptionDate = this.expirySubscriptionDate.plusMonths(months);
         }
 
-
+        useWallet(months * SUBSCRIBEAMOUNT);
         this.updatedAt = LocalDateTime.now();
     }
 
@@ -51,6 +53,10 @@ public class Customer {
         }
         this.wallet -= money;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public void buyWebtoon(Webtoon webtoon) {
+        useWallet(webtoon.getWebtoonType().getPrice());
     }
 
 }

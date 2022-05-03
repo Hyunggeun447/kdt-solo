@@ -29,7 +29,7 @@ public class LoginController {
     public String doLogin(@Validated @ModelAttribute LoginForm loginForm,
                         BindingResult bindingResult,
                         HttpServletRequest request,
-                        @RequestParam(defaultValue = "/") String redirectURL) {
+                        @RequestParam(defaultValue = "/webtoon") String redirectURL) {
 
         if (bindingResult.hasErrors()) {
             return "redirect:/login";
@@ -52,12 +52,12 @@ public class LoginController {
         return "redirect:" + redirectURL;
     }
 
-    @PostMapping("/logout")
+    @GetMapping("/logout")
     public String logout(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
         }
-        return "redirect:/";
+        return "redirect:/webtoon";
     }
 }
