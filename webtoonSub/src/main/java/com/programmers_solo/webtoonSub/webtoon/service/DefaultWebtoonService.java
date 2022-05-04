@@ -45,8 +45,17 @@ public class DefaultWebtoonService implements WebtoonService {
     public Webtoon createWebtoon(String webtoonName, UUID authorId, WebtoonType webtoonType, MultipartFile file) {
         UUID uuid = UUID.randomUUID();
         String savePath = null;
-        savePath = savefile(file, uuid, savePath);
-
+        if (!file.isEmpty()) {
+            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
+            String fileName = uuid + "_" + file.getOriginalFilename();
+            File saveFile = new File(projectPath);
+            try {
+                file.transferTo(saveFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            savePath = "/files/" + fileName;
+        }
         Webtoon webtoon = Webtoon.builder()
                 .webtoonId(uuid)
                 .webtoonName(webtoonName)
@@ -62,7 +71,17 @@ public class DefaultWebtoonService implements WebtoonService {
     public Webtoon createWebtoon(String webtoonName, UUID authorId, WebtoonType webtoonType, String description, MultipartFile file) {
         UUID uuid = UUID.randomUUID();
         String savePath = null;
-        savePath = savefile(file, uuid, savePath);
+        if (!file.isEmpty()) {
+            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
+            String fileName = uuid + "_" + file.getOriginalFilename();
+            File saveFile = new File(projectPath, fileName);
+            try {
+                file.transferTo(saveFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            savePath = "/files/" + fileName;
+        }
 
         Webtoon webtoon = Webtoon.builder()
                 .webtoonId(uuid)
@@ -116,26 +135,16 @@ public class DefaultWebtoonService implements WebtoonService {
         webtoonDao.deleteAll();
     }
 
+    @Override
+    public void deleteOne(UUID webtoonId) {
+        webtoonDao.deleteByWebtoonId(webtoonId);
+    }
+
     private Webtoon findByWebtoonId(UUID webtoonId) {
         Optional<Webtoon> byId = webtoonDao.findById(webtoonId);
         if (byId.isEmpty()) {
             throw new IllegalArgumentException("해당 웹툰이 존재하지 않습니다.");
         }
         return byId.get();
-    }
-
-    private String savefile(MultipartFile file, UUID uuid, String savePath) {
-        if (!file.isEmpty()) {
-            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
-            String fileName = uuid + "_" + file.getOriginalFilename();
-            File saveFile = new File(projectPath);
-            try {
-                file.transferTo(saveFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            savePath = "/files/" + fileName;
-        }
-        return savePath;
     }
 }

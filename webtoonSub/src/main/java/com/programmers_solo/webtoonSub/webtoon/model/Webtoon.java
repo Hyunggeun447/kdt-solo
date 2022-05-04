@@ -10,6 +10,7 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Builder
+@Getter
 @ToString
 public class Webtoon {
 

@@ -94,6 +94,15 @@ public class WebtoonJdbcDao implements WebtoonDao{
                 Collections.singletonMap("searchText", "%" + searchText + "%"), webtoonRowMapper);
     }
 
+    @Override
+    public void deleteByWebtoonId(UUID webtoonId) {
+        int delete = jdbcTemplate.update("delete from webtoons where webtoon_id = UUID_TO_BIN(:webtoonId)",
+                Collections.singletonMap("webtoonId", webtoonId.toString().getBytes()));
+        if (delete != 1) {
+            throw new RuntimeException("No Delete");
+        }
+    }
+
     private static final RowMapper<Webtoon> webtoonRowMapper = (resultSet, i) -> {
         UUID webtoonId = toUUID(resultSet.getBytes("webtoon_id"));
         String webtoonName = resultSet.getString("webtoon_name");

@@ -31,4 +31,6 @@ public interface WebtoonService {
     void updateDescription(UUID webtoonId, String description);
 
     void deleteAll();
+
+    void deleteOne(UUID webtoonId);
 }

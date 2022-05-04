@@ -20,14 +20,16 @@ create table customers
         primary key,
     customer_email           varchar(30) not null,
     password                 varchar(30) not null,
-    wallet                   int not null,
+    wallet                   int         not null,
+    grade                    varchar(30) not null,
     expiry_subscription_date datetime(6) null,
     created_at               datetime(6) not null,
     updated_at               datetime(6) null,
     last_login_at            datetime(6) null,
     constraint customer_email
-        unique (customer_email)
+        unique (customer_email);
 );
+
 
 create table webtoonWallet
 (

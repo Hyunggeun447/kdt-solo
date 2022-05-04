@@ -2,6 +2,7 @@ package com.programmers_solo.webtoonSub.customer.service;
 
 import com.programmers_solo.webtoonSub.customer.dao.CustomerDao;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
+import com.programmers_solo.webtoonSub.customer.model.Grade;
 import com.programmers_solo.webtoonSub.webtoon.dao.WebtoonDao;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,7 @@ public class DefaultCustomerService implements CustomerService {
                 .customerId(UUID.randomUUID())
                 .customerEmail(customerEmail)
                 .password(password)
+                .grade(Grade.NORMAL)
                 .createdAt(LocalDateTime.now())
                 .build();
         return customerDao.insert(customer);

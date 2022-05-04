@@ -4,8 +4,6 @@ import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import lombok.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 @AllArgsConstructor
@@ -20,6 +18,7 @@ public class Customer {
     private long wallet = 0;
     private LocalDateTime expirySubscriptionDate;
     private final LocalDateTime createdAt;
+    private Grade grade = Grade.NORMAL;
     private LocalDateTime updatedAt;
     private LocalDateTime lastLoginAt;
 
@@ -65,5 +64,9 @@ public class Customer {
 
     public boolean checkSubscription() {
         return this.getExpirySubscriptionDate().isAfter(LocalDateTime.now());
+    }
+
+    public void gradeUpAdmin() {
+        this.grade = Grade.ADMIN;
     }
 }

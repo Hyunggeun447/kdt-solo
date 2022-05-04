@@ -2,6 +2,7 @@ package com.programmers_solo.webtoonSub.controller;
 
 import com.programmers_solo.webtoonSub.controller.dto.CreateWebtoonDto;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
+import com.programmers_solo.webtoonSub.customer.model.Grade;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
@@ -13,8 +14,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.programmers_solo.webtoonSub.controller.LoginController.SESSION_LOGIN_CUSTOMER;
 
@@ -26,11 +27,6 @@ public class WebtoonController {
 
     private final WebtoonService webtoonService;
     private final CustomerService customerService;
-
-    @ModelAttribute("webtoonTypes")
-    public WebtoonType[] webtoonTypes() {
-        return WebtoonType.values();
-    }
 
     @GetMapping
     public String findWebtoonList(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
@@ -45,11 +41,14 @@ public class WebtoonController {
         if (loginCustomer == null) {
             return "webtoon/webtoonListNotLogin";
         }
+        if (loginCustomer.getGrade().equals(Grade.ADMIN)) {
+            return "webtoon/adminWebtoonList";
+        }
         return "webtoon/webtoonList";
     }
 
     @GetMapping("/{webtoonName}")
-    public String findWebtoon(@SessionAttribute(name=SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
+    public String findWebtoon(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
                               @PathVariable String webtoonName,
                               Model model) {
         Webtoon webtoon = webtoonService.getByWebtoonName(webtoonName);
@@ -76,27 +75,4 @@ public class WebtoonController {
         return "redirect:/webtoon/buy?webtoonName=" + webtoonName;
     }
 
-    @GetMapping("/enroll")
-    public String createWebtoon(@ModelAttribute("createWebtoonDto") CreateWebtoonDto createWebtoonDto) {
-        return "webtoon/createForm";
-    }
-
-    @PostMapping("/enroll")
-    public String doCreateWebtoon(@ModelAttribute CreateWebtoonDto createWebtoonDto,
-                                  @ModelAttribute MultipartFile file) {
-        webtoonService.createWebtoon(
-                createWebtoonDto.getWebtoonName(),
-                createWebtoonDto.getAuthorId(),
-                createWebtoonDto.getWebtoonType(),
-                createWebtoonDto.getDescription(),
-                file
-        );
-        return "redirect:/webtoon";
-    }
-
-    @PostMapping("/delete")
-    public String deleteAll() {
-        webtoonService.deleteAll();
-        return "redirect:/webtoon";
-    }
 }

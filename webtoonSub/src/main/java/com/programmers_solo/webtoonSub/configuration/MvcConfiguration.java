@@ -9,8 +9,16 @@ public class MvcConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+
         registry.addInterceptor(new LoginCheckInterceptor())
                 .addPathPatterns("/**")
-                .excludePathPatterns("/webtoon/**","/files/**", "/css/**", "/login", "/*.ico", "/error", "/logout", "/customer/enroll");
+                .order(1)
+                .excludePathPatterns("/webtoon/**", "/test/**", "/css/**", "/login", "/*.ico", "/ error", "/logout", "/customer/**");
+
+        registry.addInterceptor(new AdminCheckInterceptor())
+                .addPathPatterns("/**")
+                .order(2)
+                .excludePathPatterns("/webtoon/**", "/test/**", "/css/**", "/login", "/*.ico", "/ error", "/logout", "/customer/**"
+                        , "admin/**");
     }
 }
