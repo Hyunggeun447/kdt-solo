@@ -13,9 +13,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import static com.programmers_solo.webtoonSub.controller.LoginController.SESSION_LOGIN_CUSTOMER;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,7 +33,7 @@ public class WebtoonController {
     }
 
     @GetMapping
-    public String findWebtoonList(@SessionAttribute(name = "loginCustomer", required = false) Customer loginCustomer,
+    public String findWebtoonList(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
                                   @RequestParam Optional<String> searchText,
                                   Model model) {
 
@@ -45,11 +46,12 @@ public class WebtoonController {
             return "webtoon/webtoonListNotLogin";
         }
         return "webtoon/webtoonList";
-
     }
 
     @GetMapping("/{webtoonName}")
-    public String findWebtoon(@SessionAttribute(name="loginCustomer", required = false) Customer loginCustomer, @PathVariable String webtoonName, HttpServletRequest request, Model model) {
+    public String findWebtoon(@SessionAttribute(name=SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
+                              @PathVariable String webtoonName,
+                              Model model) {
         Webtoon webtoon = webtoonService.getByWebtoonName(webtoonName);
 
         if (webtoon.getWebtoonType().equals(WebtoonType.FREE)) {
@@ -57,7 +59,7 @@ public class WebtoonController {
             return "webtoon/webtoon";
         }
 
-        if (request.getSession().getAttribute("loginCustomer") == null) {
+        if (loginCustomer == null) {
             return "redirect:/login";
         }
 
@@ -80,7 +82,8 @@ public class WebtoonController {
     }
 
     @PostMapping("/enroll")
-    public String doCreateWebtoon(@ModelAttribute CreateWebtoonDto createWebtoonDto, @ModelAttribute MultipartFile file) {
+    public String doCreateWebtoon(@ModelAttribute CreateWebtoonDto createWebtoonDto,
+                                  @ModelAttribute MultipartFile file) {
         webtoonService.createWebtoon(
                 createWebtoonDto.getWebtoonName(),
                 createWebtoonDto.getAuthorId(),

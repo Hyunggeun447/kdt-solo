@@ -78,7 +78,6 @@ public class DefaultCustomerService implements CustomerService {
         return customerDao.update(customer);
     }
 
-    //todo //예외처리 확인
     @Override
     public Customer buyWebtoon(UUID customerId, String webtoonName) {
         if (webtoonDao.findByName(webtoonName).isEmpty()) {

@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
+import static com.programmers_solo.webtoonSub.controller.LoginController.SESSION_LOGIN_CUSTOMER;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,9 +32,8 @@ public class CustomerController {
     }
 
     @PostMapping("/customer/wallet")
-    public String doChargedWallet(@SessionAttribute(name = "loginCustomer", required = false) Customer loginCustomer,
-                                  @ModelAttribute("chargeWalletDto") ChargeWalletDto chargeWalletDto,
-                                  HttpServletRequest request) {
+    public String doChargedWallet(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
+                                  @ModelAttribute("chargeWalletDto") ChargeWalletDto chargeWalletDto) {
 
         customerService.chargeWallet(loginCustomer.getCustomerId(), chargeWalletDto.getMoneyAmount());
         return "redirect:/webtoon";
@@ -46,9 +45,8 @@ public class CustomerController {
     }
 
     @PostMapping("/customer/subscribe")
-    public String doSubscribe(@SessionAttribute(name = "loginCustomer", required = false) Customer loginCustomer,
-                              @ModelAttribute("subscribeDto") SubscribeDto subscribeDto,
-                              HttpServletRequest request) {
+    public String doSubscribe(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
+                              @ModelAttribute("subscribeDto") SubscribeDto subscribeDto) {
         customerService.subscribe(loginCustomer.getCustomerId(), subscribeDto.getMonth());
         return "redirect:/webtoon";
     }
@@ -61,26 +59,23 @@ public class CustomerController {
     }
 
     @PostMapping("/webtoon/buy")
-    public String doBuyWebtoon(@SessionAttribute(name = "loginCustomer", required = false) Customer loginCustomer,
-                               @ModelAttribute("buyWebtoonDto") BuyWebtoonDto buyWebtoonDto,
-                               HttpServletRequest request) {
+    public String doBuyWebtoon(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
+                               @ModelAttribute("buyWebtoonDto") BuyWebtoonDto buyWebtoonDto) {
 
         customerService.buyWebtoon(loginCustomer.getCustomerId(), buyWebtoonDto.getWebtoonName());
         return "redirect:/webtoon";
     }
 
     @GetMapping("/customer/detail")
-    public String detailCustomer(@SessionAttribute(name = "loginCustomer", required = false) Customer loginCustomer,
-                                 HttpServletRequest request,
+    public String detailCustomer(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
                                  @ModelAttribute("customerDetailDto") CustomerDetailDto customerDetailDto) {
 
-        Customer customerById = customerService.getCustomerById(loginCustomer.getCustomerId());
+        Customer customer = customerService.getCustomerById(loginCustomer.getCustomerId());
 
-        customerDetailDto.setCustomerEmail(customerById.getCustomerEmail());
-        customerDetailDto.setWallet(customerById.getWallet());
-        customerDetailDto.setSubscriptionDate(customerById.getExpirySubscriptionDate());
+        customerDetailDto.setCustomerEmail(customer.getCustomerEmail());
+        customerDetailDto.setSubscriptionDate(customer.getExpirySubscriptionDate());
+        customerDetailDto.setWallet(customer.getWallet());
 
         return "customer/detailForm";
     }
-
 }

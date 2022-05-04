@@ -18,6 +18,8 @@ import javax.servlet.http.HttpSession;
 @Slf4j
 public class LoginController {
 
+    public static final String SESSION_LOGIN_CUSTOMER = "loginCustomer";
+
     private final CustomerService customerService;
 
     @GetMapping("/login")
@@ -44,7 +46,7 @@ public class LoginController {
             }
 
             HttpSession session = request.getSession();
-            session.setAttribute("loginCustomer", customer);
+            session.setAttribute(SESSION_LOGIN_CUSTOMER, customer);
         } catch (RuntimeException e) {
             return "redirect:/login";
         }
