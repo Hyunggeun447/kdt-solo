@@ -23,6 +23,15 @@ public class DefaultWebtoonService implements WebtoonService {
     private final WebtoonDao webtoonDao;
 
     @Override
+    public Webtoon findByWebtoonID(UUID webtoonId) {
+        Optional<Webtoon> byId = webtoonDao.findById(webtoonId);
+        if (byId.isEmpty()) {
+            throw new IllegalArgumentException("웹툰이 존재하지 않습니다.");
+        }
+        return byId.get();
+    }
+
+    @Override
     public Webtoon getByWebtoonName(String WebtoonName) {
         Optional<Webtoon> byName = webtoonDao.findByName(WebtoonName);
         if (byName.isEmpty()) {

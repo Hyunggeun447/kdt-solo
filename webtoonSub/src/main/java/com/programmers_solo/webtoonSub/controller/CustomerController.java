@@ -4,13 +4,17 @@ import com.programmers_solo.webtoonSub.controller.dto.*;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.UUID;
 
 import static com.programmers_solo.webtoonSub.controller.LoginController.SESSION_LOGIN_CUSTOMER;
 
 @Controller
 @RequiredArgsConstructor
+@Slf4j
 public class CustomerController {
 
     private final CustomerService customerService;
@@ -52,9 +56,9 @@ public class CustomerController {
     }
 
     @GetMapping("/webtoon/buy")
-    public String buyWebtoon(@RequestParam String webtoonName,
+    public String buyWebtoon(@RequestParam UUID webtoonId,
                              @ModelAttribute("buyWebtoonDto") BuyWebtoonDto buyWebtoonDto) {
-        buyWebtoonDto.setWebtoonName(webtoonName);
+        buyWebtoonDto.setWebtoonId(webtoonId);
         return "webtoon/buyForm";
     }
 
@@ -62,8 +66,12 @@ public class CustomerController {
     public String doBuyWebtoon(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
                                @ModelAttribute("buyWebtoonDto") BuyWebtoonDto buyWebtoonDto) {
 
-        customerService.buyWebtoon(loginCustomer.getCustomerId(), buyWebtoonDto.getWebtoonName());
-        return "redirect:/webtoon";
+        try {
+            customerService.buyWebtoon(loginCustomer.getCustomerId(), buyWebtoonDto.getWebtoonId());
+            return "redirect:/webtoon";
+        } catch (RuntimeException e) {
+            return "redirect:/customer/detail";
+        }
     }
 
     @GetMapping("/customer/detail")

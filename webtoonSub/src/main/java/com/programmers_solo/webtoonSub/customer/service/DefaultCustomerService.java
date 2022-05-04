@@ -6,6 +6,7 @@ import com.programmers_solo.webtoonSub.customer.model.Grade;
 import com.programmers_solo.webtoonSub.webtoon.dao.WebtoonDao;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +18,7 @@ import java.util.UUID;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class DefaultCustomerService implements CustomerService {
 
     private final CustomerDao customerDao;
@@ -81,11 +83,11 @@ public class DefaultCustomerService implements CustomerService {
     }
 
     @Override
-    public Customer buyWebtoon(UUID customerId, String webtoonName) {
-        if (webtoonDao.findByName(webtoonName).isEmpty()) {
+    public Customer buyWebtoon(UUID customerId, UUID webtoonId) {
+        if (webtoonDao.findById(webtoonId).isEmpty()) {
             throw new IllegalArgumentException("존재하지 않는 웹툰입니다.");
         }
-        Webtoon webtoon = webtoonDao.findByName(webtoonName).get();
+        Webtoon webtoon = webtoonDao.findById(webtoonId).get();
         Customer customer = findCustomerById(customerId);
 
         if (customerDao.checkExistRecordInWallet(customer, webtoon)) {

@@ -22,7 +22,7 @@ public interface CustomerService {
 
     Customer chargeWallet(UUID customerId, long money);
 
-    Customer buyWebtoon(UUID customerId, String webtoonName);
+    Customer buyWebtoon(UUID customerId, UUID webtoonId);
 
     boolean checkBoughtRecord(Customer customer, Webtoon webtoon);
 }

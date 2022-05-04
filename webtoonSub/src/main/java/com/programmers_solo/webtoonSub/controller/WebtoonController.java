@@ -47,11 +47,11 @@ public class WebtoonController {
         return "webtoon/webtoonList";
     }
 
-    @GetMapping("/{webtoonName}")
+    @GetMapping("/{webtoonId}")
     public String findWebtoon(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
-                              @PathVariable String webtoonName,
+                              @PathVariable UUID webtoonId,
                               Model model) {
-        Webtoon webtoon = webtoonService.getByWebtoonName(webtoonName);
+        Webtoon webtoon = webtoonService.findByWebtoonID(webtoonId);
 
         if (webtoon.checkFree()) {
             model.addAttribute("webtoon", webtoon);
@@ -72,7 +72,7 @@ public class WebtoonController {
         } catch (RuntimeException e) {
             log.info("구독한 기록 없음.");
         }
-        return "redirect:/webtoon/buy?webtoonName=" + webtoonName;
+        return "redirect:/webtoon/buy?webtoonId=" + webtoonId;
     }
 
 }

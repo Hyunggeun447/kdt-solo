@@ -10,6 +10,8 @@ import java.util.UUID;
 
 public interface WebtoonService {
 
+    Webtoon findByWebtoonID(UUID webtoonId);
+
     Webtoon getByWebtoonName(String WebtoonName);
 
     List<Webtoon> getWebtoonsBySearchText(String searchText);
