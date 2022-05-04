@@ -54,7 +54,7 @@ public class WebtoonController {
                               Model model) {
         Webtoon webtoon = webtoonService.getByWebtoonName(webtoonName);
 
-        if (webtoon.getWebtoonType().equals(WebtoonType.FREE)) {
+        if (webtoon.checkFree()) {
             model.addAttribute("webtoon", webtoon);
             return "webtoon/webtoon";
         }
@@ -63,10 +63,10 @@ public class WebtoonController {
             return "redirect:/login";
         }
 
-        Customer customer = customerService.getCustomerById(loginCustomer.getCustomerId());
+        Customer customer = customerService.findCustomerById(loginCustomer.getCustomerId());
 
         try {
-            if (customerService.checkBoughtRecord(customer, webtoon) || customer.getExpirySubscriptionDate().isAfter(LocalDateTime.now())) {
+            if (customerService.checkBoughtRecord(customer, webtoon) || customer.checkSubscription()) {
                 model.addAttribute("webtoon", webtoon);
                 return "webtoon/webtoon";
             }

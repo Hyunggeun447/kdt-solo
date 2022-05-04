@@ -70,7 +70,7 @@ public class CustomerController {
     public String detailCustomer(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
                                  @ModelAttribute("customerDetailDto") CustomerDetailDto customerDetailDto) {
 
-        Customer customer = customerService.getCustomerById(loginCustomer.getCustomerId());
+        Customer customer = customerService.findCustomerById(loginCustomer.getCustomerId());
 
         customerDetailDto.setCustomerEmail(customer.getCustomerEmail());
         customerDetailDto.setSubscriptionDate(customer.getExpirySubscriptionDate());

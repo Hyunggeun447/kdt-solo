@@ -8,9 +8,9 @@ import java.util.UUID;
 
 public interface CustomerService {
 
-    List<Customer> getAllCustomers();
+    List<Customer> findAllCustomer();
 
-    Customer getCustomerById(UUID customerId);
+    Customer findCustomerById(UUID customerId);
 
     Customer createCustomer(String customerEmail, String password);
 

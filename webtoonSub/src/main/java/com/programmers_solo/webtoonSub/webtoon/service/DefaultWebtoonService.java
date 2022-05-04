@@ -45,17 +45,8 @@ public class DefaultWebtoonService implements WebtoonService {
     public Webtoon createWebtoon(String webtoonName, UUID authorId, WebtoonType webtoonType, MultipartFile file) {
         UUID uuid = UUID.randomUUID();
         String savePath = null;
-        if (!file.isEmpty()) {
-            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
-            String fileName = uuid + "_" + file.getOriginalFilename();
-            File saveFile = new File(projectPath);
-            try {
-                file.transferTo(saveFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            savePath = "/files/" + fileName;
-        }
+        savePath = savefile(file, uuid, savePath);
+
         Webtoon webtoon = Webtoon.builder()
                 .webtoonId(uuid)
                 .webtoonName(webtoonName)
@@ -71,17 +62,8 @@ public class DefaultWebtoonService implements WebtoonService {
     public Webtoon createWebtoon(String webtoonName, UUID authorId, WebtoonType webtoonType, String description, MultipartFile file) {
         UUID uuid = UUID.randomUUID();
         String savePath = null;
-        if (!file.isEmpty()) {
-            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
-            String fileName = uuid + "_" + file.getOriginalFilename();
-            File saveFile = new File(projectPath, fileName);
-            try {
-                file.transferTo(saveFile);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            savePath = "/files/" + fileName;
-        }
+        savePath = savefile(file, uuid, savePath);
+
         Webtoon webtoon = Webtoon.builder()
                 .webtoonId(uuid)
                 .webtoonName(webtoonName)
@@ -91,7 +73,6 @@ public class DefaultWebtoonService implements WebtoonService {
                 .description(description)
                 .createdAt(LocalDateTime.now())
                 .build();
-
         return webtoonDao.insert(webtoon);
     }
 
@@ -108,7 +89,6 @@ public class DefaultWebtoonService implements WebtoonService {
         webtoon.changePath(newPath);
         webtoonDao.update(webtoon);
     }
-
 
     @Override
     public void updateFreePrice(UUID webtoonId) {
@@ -142,5 +122,20 @@ public class DefaultWebtoonService implements WebtoonService {
             throw new IllegalArgumentException("해당 웹툰이 존재하지 않습니다.");
         }
         return byId.get();
+    }
+
+    private String savefile(MultipartFile file, UUID uuid, String savePath) {
+        if (!file.isEmpty()) {
+            String projectPath = System.getProperty("user.dir") + "/src/main/resources/static/files";
+            String fileName = uuid + "_" + file.getOriginalFilename();
+            File saveFile = new File(projectPath);
+            try {
+                file.transferTo(saveFile);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            savePath = "/files/" + fileName;
+        }
+        return savePath;
     }
 }

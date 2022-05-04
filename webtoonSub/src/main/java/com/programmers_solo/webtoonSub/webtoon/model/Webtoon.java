@@ -10,7 +10,6 @@ import java.util.UUID;
 
 @AllArgsConstructor
 @Builder
-@Getter
 @ToString
 public class Webtoon {
 
@@ -46,5 +45,9 @@ public class Webtoon {
     public void changeDescription(String description) {
         this.description = description;
         this.updatedAt = LocalDateTime.now();
+    }
+
+    public boolean checkFree() {
+        return this.webtoonType.equals(WebtoonType.FREE);
     }
 }

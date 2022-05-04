@@ -38,7 +38,7 @@ public class Customer {
             this.expirySubscriptionDate = this.expirySubscriptionDate.plusMonths(months);
         }
 
-        useWallet(months * SUBSCRIBEAMOUNT);
+        useWallet((long) months * SUBSCRIBEAMOUNT);
         this.updatedAt = LocalDateTime.now();
     }
 
@@ -59,4 +59,11 @@ public class Customer {
         useWallet(webtoon.getWebtoonType().getPrice());
     }
 
+    public boolean checkPassword(String password) {
+        return this.password.equals(password);
+    }
+
+    public boolean checkSubscription() {
+        return this.getExpirySubscriptionDate().isAfter(LocalDateTime.now());
+    }
 }

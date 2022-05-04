@@ -23,12 +23,12 @@ public class DefaultCustomerService implements CustomerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Customer> getAllCustomers() {
+    public List<Customer> findAllCustomer() {
         return customerDao.findAll();
     }
 
     @Override
-    public Customer getCustomerById(UUID customerId) {
+    public Customer findCustomerById(UUID customerId) {
         return findByCustomerId(customerId);
     }
 
@@ -50,7 +50,7 @@ public class DefaultCustomerService implements CustomerService {
         if (byEmail.isEmpty()) {
             throw new RuntimeException("존재하지 않는 고객입니다.");
         }
-        if (byEmail.get().getPassword().equals(password)) {
+        if (byEmail.get().checkPassword(password)) {
             return byEmail.get();
         } else {
             throw new RuntimeException("비밀번호 오류입니다.");
@@ -84,7 +84,7 @@ public class DefaultCustomerService implements CustomerService {
             throw new IllegalArgumentException("존재하지 않는 웹툰입니다.");
         }
         Webtoon webtoon = webtoonDao.findByName(webtoonName).get();
-        Customer customer = getCustomerById(customerId);
+        Customer customer = findCustomerById(customerId);
 
         if (customerDao.checkExistRecordInWallet(customer, webtoon)) {
             throw new RuntimeException("이미 구매 이력이 있습니다");
