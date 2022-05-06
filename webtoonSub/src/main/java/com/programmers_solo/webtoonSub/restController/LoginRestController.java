@@ -1,0 +1,57 @@
+package com.programmers_solo.webtoonSub.restController;
+
+import com.programmers_solo.webtoonSub.controller.dto.LoginForm;
+import com.programmers_solo.webtoonSub.customer.model.Customer;
+import com.programmers_solo.webtoonSub.customer.service.CustomerService;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Controller;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
+@RestController
+@RequiredArgsConstructor
+@Slf4j
+public class LoginRestController {
+
+    public static final String SESSION_LOGIN_CUSTOMER = "loginCustomer";
+
+    private final CustomerService customerService;
+
+    @PostMapping("/login")
+    public Customer doLogin(@Validated @RequestBody LoginForm loginForm,
+                        BindingResult bindingResult,
+                        HttpServletRequest request,
+                        @RequestParam(defaultValue = "/webtoon") String redirectURL) {
+
+        if (bindingResult.hasErrors()) {
+            throw new RuntimeException();
+        }
+
+        Customer customer = customerService.loginCustomer(loginForm.getCustomerEmail(), loginForm.getPassword());
+        try {
+            if (customer == null) {
+                bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다");
+                throw new RuntimeException();
+            }
+            HttpSession session = request.getSession();
+            session.setAttribute(SESSION_LOGIN_CUSTOMER, customer);
+        } catch (RuntimeException e) {
+            throw new RuntimeException();
+        }
+
+        return customer;
+    }
+
+    @GetMapping("/logout")
+    public void logout(HttpServletRequest request) {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+    }
+}
