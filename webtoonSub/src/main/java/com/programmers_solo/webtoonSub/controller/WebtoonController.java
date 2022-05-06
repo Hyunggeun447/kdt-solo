@@ -71,5 +71,4 @@ public class WebtoonController {
         }
         return "redirect:/webtoon/buy?webtoonId=" + webtoonId;
     }
-
 }

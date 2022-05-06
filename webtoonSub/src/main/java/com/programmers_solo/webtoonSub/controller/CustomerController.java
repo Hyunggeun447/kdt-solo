@@ -51,8 +51,12 @@ public class CustomerController {
     @PostMapping("/customer/subscribe")
     public String doSubscribe(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
                               @ModelAttribute("subscribeDto") SubscribeDto subscribeDto) {
-        customerService.subscribe(loginCustomer.getCustomerId(), subscribeDto.getMonth());
-        return "redirect:/webtoon";
+        try {
+            customerService.subscribe(loginCustomer.getCustomerId(), subscribeDto.getMonth());
+            return "redirect:/webtoon";
+        } catch (RuntimeException e) {
+            return "redirect:/customer/detail";
+        }
     }
 
     @GetMapping("/webtoon/buy")
