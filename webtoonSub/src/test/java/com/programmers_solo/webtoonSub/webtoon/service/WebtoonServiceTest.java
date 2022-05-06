@@ -7,9 +7,7 @@ import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -224,7 +222,7 @@ class WebtoonServiceTest {
         public void test() throws Exception {
 
             //when
-            List<Webtoon> allWebtoons = webtoonService.getAllWebtoons();
+            List<Webtoon> allWebtoons = webtoonService.findAllWebtoon();
 
             //then
             assertThat(allWebtoons.size()).isEqualTo(6);
@@ -246,7 +244,7 @@ class WebtoonServiceTest {
             String searchText = "검색어";
 
             //when
-            List<Webtoon> webtoonsBySearchText = webtoonService.getWebtoonsBySearchText(searchText);
+            List<Webtoon> webtoonsBySearchText = webtoonService.findBySearchText(searchText);
 
             //then
             assertThat(webtoonsBySearchText.size()).isEqualTo(10);
@@ -263,7 +261,7 @@ class WebtoonServiceTest {
             String searchText = "어색검";
 
             //when
-            List<Webtoon> webtoonsBySearchText = webtoonService.getWebtoonsBySearchText(searchText);
+            List<Webtoon> webtoonsBySearchText = webtoonService.findBySearchText(searchText);
 
             //then
             assertThat(webtoonsBySearchText.size()).isEqualTo(0);
@@ -280,7 +278,7 @@ class WebtoonServiceTest {
             String searchText = null;
 
             //when
-            List<Webtoon> webtoonsBySearchText = webtoonService.getWebtoonsBySearchText(searchText);
+            List<Webtoon> webtoonsBySearchText = webtoonService.findBySearchText(searchText);
 
             //then
             assertThat(webtoonsBySearchText.size()).isEqualTo(0);
@@ -297,7 +295,7 @@ class WebtoonServiceTest {
             String searchText = "";
 
             //when
-            List<Webtoon> webtoonsBySearchText = webtoonService.getWebtoonsBySearchText(searchText);
+            List<Webtoon> webtoonsBySearchText = webtoonService.findBySearchText(searchText);
 
             //then
             assertThat(webtoonsBySearchText.size()).isEqualTo(16);

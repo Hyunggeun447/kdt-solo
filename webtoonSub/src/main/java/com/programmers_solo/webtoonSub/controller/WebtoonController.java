@@ -1,18 +1,15 @@
 package com.programmers_solo.webtoonSub.controller;
 
-import com.programmers_solo.webtoonSub.controller.dto.CreateWebtoonDto;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.model.Grade;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
-import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
 import com.programmers_solo.webtoonSub.webtoon.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -30,13 +27,13 @@ public class WebtoonController {
 
     @GetMapping
     public String findWebtoonList(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
-                                  @RequestParam Optional<String> searchText,
+                                  @RequestParam("searchText") Optional<String> searchText,
                                   Model model) {
 
         if (searchText.isEmpty()) {
-            model.addAttribute("webtoonList", webtoonService.getAllWebtoons());
+            model.addAttribute("webtoonList", webtoonService.findAllWebtoon());
         } else {
-            model.addAttribute("webtoonList", webtoonService.getWebtoonsBySearchText(searchText.get()));
+            model.addAttribute("webtoonList", webtoonService.findBySearchText(searchText.get()));
         }
         if (loginCustomer == null) {
             return "webtoon/webtoonListNotLogin";

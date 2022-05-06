@@ -32,7 +32,7 @@ public class DefaultWebtoonService implements WebtoonService {
     }
 
     @Override
-    public Webtoon getByWebtoonName(String WebtoonName) {
+    public Webtoon findByWebtoonName(String WebtoonName) {
         Optional<Webtoon> byName = webtoonDao.findByName(WebtoonName);
         if (byName.isEmpty()) {
             throw new IllegalArgumentException("웹툰이 존재하지 않습니다.");
@@ -41,12 +41,12 @@ public class DefaultWebtoonService implements WebtoonService {
     }
 
     @Override
-    public List<Webtoon> getWebtoonsBySearchText(String searchText) {
+    public List<Webtoon> findBySearchText(String searchText) {
         return webtoonDao.findBySearchText(searchText);
     }
 
     @Override
-    public List<Webtoon> getAllWebtoons() {
+    public List<Webtoon> findAllWebtoon() {
         return webtoonDao.findAll();
     }
 

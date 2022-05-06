@@ -5,18 +5,17 @@ import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 public interface WebtoonService {
 
     Webtoon findByWebtoonID(UUID webtoonId);
 
-    Webtoon getByWebtoonName(String WebtoonName);
+    Webtoon findByWebtoonName(String WebtoonName);
 
-    List<Webtoon> getWebtoonsBySearchText(String searchText);
+    List<Webtoon> findBySearchText(String searchText);
 
-    List<Webtoon> getAllWebtoons();
+    List<Webtoon> findAllWebtoon();
 
     Webtoon createWebtoon(String webtoonName, UUID authorId, WebtoonType webtoonType, MultipartFile file);
 
