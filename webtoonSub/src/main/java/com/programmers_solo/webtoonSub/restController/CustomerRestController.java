@@ -5,10 +5,8 @@ import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.UUID;
 
 import static com.programmers_solo.webtoonSub.controller.LoginController.SESSION_LOGIN_CUSTOMER;
 

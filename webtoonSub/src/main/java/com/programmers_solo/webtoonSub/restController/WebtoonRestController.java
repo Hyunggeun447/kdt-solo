@@ -1,14 +1,12 @@
 package com.programmers_solo.webtoonSub.restController;
 
 import com.programmers_solo.webtoonSub.customer.model.Customer;
-import com.programmers_solo.webtoonSub.customer.model.Grade;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import com.programmers_solo.webtoonSub.webtoon.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
