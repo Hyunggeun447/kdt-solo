@@ -18,7 +18,7 @@ import static com.programmers_solo.webtoonSub.controller.LoginController.SESSION
 @Controller
 @RequiredArgsConstructor
 @Slf4j
-@RequestMapping("/webtoon")
+@RequestMapping("/v1/webtoon")
 public class WebtoonRestController {
 
     private final WebtoonService webtoonService;

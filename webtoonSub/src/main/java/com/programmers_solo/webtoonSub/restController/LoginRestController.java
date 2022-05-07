@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/v1")
 public class LoginRestController {
 
     public static final String SESSION_LOGIN_CUSTOMER = "loginCustomer";

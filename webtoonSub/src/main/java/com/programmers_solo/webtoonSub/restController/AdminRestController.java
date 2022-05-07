@@ -12,7 +12,7 @@ import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin")
+@RequestMapping("/v1/admin")
 public class AdminRestController {
 
     private final WebtoonService webtoonService;

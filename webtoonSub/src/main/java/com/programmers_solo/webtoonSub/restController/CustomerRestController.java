@@ -13,6 +13,7 @@ import static com.programmers_solo.webtoonSub.controller.LoginController.SESSION
 @RestController
 @RequiredArgsConstructor
 @Slf4j
+@RequestMapping("/v1")
 public class CustomerRestController {
 
     private final CustomerService customerService;
