@@ -1,4 +1,4 @@
-package com.programmers_solo.webtoonSub.controller.dto;
+package com.programmers_solo.webtoonSub.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

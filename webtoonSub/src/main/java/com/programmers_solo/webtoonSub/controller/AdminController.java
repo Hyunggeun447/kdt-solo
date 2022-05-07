@@ -1,6 +1,6 @@
 package com.programmers_solo.webtoonSub.controller;
 
-import com.programmers_solo.webtoonSub.controller.dto.CreateWebtoonDto;
+import com.programmers_solo.webtoonSub.dto.CreateWebtoonDto;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.model.Grade;
 import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;

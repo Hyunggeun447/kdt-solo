@@ -1,4 +1,4 @@
-package com.programmers_solo.webtoonSub.controller.dto;
+package com.programmers_solo.webtoonSub.dto;
 
 import com.programmers_solo.webtoonSub.webtoon.model.WebtoonType;
 import lombok.*;

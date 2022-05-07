@@ -1,6 +1,6 @@
 package com.programmers_solo.webtoonSub.restController;
 
-import com.programmers_solo.webtoonSub.controller.dto.LoginForm;
+import com.programmers_solo.webtoonSub.dto.LoginForm;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;
@@ -25,8 +25,7 @@ public class LoginRestController {
     @PostMapping("/login")
     public Customer doLogin(@Validated @RequestBody LoginForm loginForm,
                         BindingResult bindingResult,
-                        HttpServletRequest request,
-                        @RequestParam(defaultValue = "/webtoon") String redirectURL) {
+                        HttpServletRequest request) {
 
         if (bindingResult.hasErrors()) {
             throw new RuntimeException();

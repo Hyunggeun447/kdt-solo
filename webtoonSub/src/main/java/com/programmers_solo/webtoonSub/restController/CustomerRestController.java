@@ -1,8 +1,8 @@
 package com.programmers_solo.webtoonSub.restController;
 
-import com.programmers_solo.webtoonSub.controller.dto.*;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
+import com.programmers_solo.webtoonSub.dto.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;

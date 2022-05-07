@@ -13,6 +13,7 @@ public class MvcConfiguration implements WebMvcConfigurer {
         registry.addInterceptor(new LoginCheckInterceptor())
                 .addPathPatterns("/**")
                 .order(1)
-                .excludePathPatterns("/webtoon/**", "/test/**", "/css/**", "/login", "/*.ico", "/error", "/logout", "/customer/**", "/files/**");
+                .excludePathPatterns("/webtoon/**", "/test/**", "/css/**", "/login", "/*.ico", "/error", "/logout", "/customer/**", "/files/**"
+                ,"/v1/webtoon/**","/v1/login","/v1/logout","/v1/customer/**","/v1/admin/**");
     }
 }

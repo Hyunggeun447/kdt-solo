@@ -1,6 +1,6 @@
 package com.programmers_solo.webtoonSub.controller;
 
-import com.programmers_solo.webtoonSub.controller.dto.LoginForm;
+import com.programmers_solo.webtoonSub.dto.LoginForm;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
 import lombok.RequiredArgsConstructor;

@@ -1,13 +1,15 @@
-package com.programmers_solo.webtoonSub.controller.dto;
+package com.programmers_solo.webtoonSub.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class SubscribeDto {
+public class BuyWebtoonDto {
 
-    private int month;
+    private UUID webtoonId;
 }
