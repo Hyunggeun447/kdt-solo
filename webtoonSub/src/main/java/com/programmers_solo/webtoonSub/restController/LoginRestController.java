@@ -3,6 +3,7 @@ package com.programmers_solo.webtoonSub.restController;
 import com.programmers_solo.webtoonSub.dto.LoginForm;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
+import com.programmers_solo.webtoonSub.exception.LoginCheckException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.BindingResult;
@@ -35,12 +36,12 @@ public class LoginRestController {
         try {
             if (customer == null) {
                 bindingResult.reject("loginFail", "아이디 또는 비밀번호가 맞지 않습니다");
-                throw new RuntimeException();
+                throw new LoginCheckException();
             }
             HttpSession session = request.getSession();
             session.setAttribute(SESSION_LOGIN_CUSTOMER, customer);
         } catch (RuntimeException e) {
-            throw new RuntimeException();
+            throw new LoginCheckException();
         }
 
         return customer;

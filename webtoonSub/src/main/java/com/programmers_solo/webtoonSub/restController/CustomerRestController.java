@@ -24,23 +24,27 @@ public class CustomerRestController {
     }
 
     @PostMapping("/customer/wallet")
-    public void doChargedWallet(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
+    public Customer doChargedWallet(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
                                   @RequestBody ChargeWalletDto chargeWalletDto) {
 
-        customerService.chargeWallet(loginCustomer.getCustomerId(), chargeWalletDto.getMoneyAmount());
+        Customer customer = customerService.chargeWallet(loginCustomer.getCustomerId(), chargeWalletDto.getMoneyAmount());
+        return customer;
+
     }
 
     @PostMapping("/customer/subscribe")
-    public void doSubscribe(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
+    public Customer doSubscribe(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
                               @RequestBody SubscribeDto subscribeDto) {
-        customerService.subscribe(loginCustomer.getCustomerId(), subscribeDto.getMonth());
+        Customer customer = customerService.subscribe(loginCustomer.getCustomerId(), subscribeDto.getMonth());
+        return customer;
     }
 
     @PostMapping("/webtoon/buy")
-    public void doBuyWebtoon(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
+    public Customer doBuyWebtoon(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
                                @RequestBody BuyWebtoonDto buyWebtoonDto) {
 
-        customerService.buyWebtoon(loginCustomer.getCustomerId(), buyWebtoonDto.getWebtoonId());
+        Customer customer = customerService.buyWebtoon(loginCustomer.getCustomerId(), buyWebtoonDto.getWebtoonId());
+        return customer;
     }
 
     @GetMapping("/customer/detail")

@@ -3,6 +3,7 @@ package com.programmers_solo.webtoonSub.controller;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
 import com.programmers_solo.webtoonSub.dto.*;
+import com.programmers_solo.webtoonSub.exception.AuthorityException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -54,7 +55,7 @@ public class CustomerController {
         try {
             customerService.subscribe(loginCustomer.getCustomerId(), subscribeDto.getMonth());
             return "redirect:/webtoon";
-        } catch (RuntimeException e) {
+        } catch (AuthorityException e) {
             return "redirect:/customer/detail";
         }
     }
@@ -73,7 +74,7 @@ public class CustomerController {
         try {
             customerService.buyWebtoon(loginCustomer.getCustomerId(), buyWebtoonDto.getWebtoonId());
             return "redirect:/webtoon";
-        } catch (RuntimeException e) {
+        } catch (AuthorityException e) {
             return "redirect:/customer/detail";
         }
     }

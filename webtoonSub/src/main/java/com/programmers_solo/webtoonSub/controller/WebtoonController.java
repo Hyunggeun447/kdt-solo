@@ -3,6 +3,7 @@ package com.programmers_solo.webtoonSub.controller;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.model.Grade;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
+import com.programmers_solo.webtoonSub.exception.AuthorityException;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import com.programmers_solo.webtoonSub.webtoon.service.WebtoonService;
 import lombok.RequiredArgsConstructor;
@@ -66,7 +67,7 @@ public class WebtoonController {
                 model.addAttribute("webtoon", webtoon);
                 return "webtoon/webtoon";
             }
-        } catch (RuntimeException e) {
+        } catch (AuthorityException e) {
             log.info("구독한 기록 없음.");
         }
         return "redirect:/webtoon/buy?webtoonId=" + webtoonId;
