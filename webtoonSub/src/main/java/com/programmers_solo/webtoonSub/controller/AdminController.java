@@ -37,8 +37,12 @@ public class AdminController {
     }
 
     @PostMapping("/enroll")
-    public String doCreateWebtoon(@ModelAttribute CreateWebtoonDto createWebtoonDto,
+    public String doCreateWebtoon(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
+                                  @ModelAttribute CreateWebtoonDto createWebtoonDto,
                                   @ModelAttribute MultipartFile file) {
+        if (!loginCustomer.getGrade().equals(Grade.ADMIN)) {
+            return "redirect:/webtoon";
+        }
         webtoonService.createWebtoon(
                 createWebtoonDto.getWebtoonName(),
                 createWebtoonDto.getAuthorId(),
@@ -50,7 +54,11 @@ public class AdminController {
     }
 
     @PostMapping("/delete")
-    public String doDeleteWebtoon(@ModelAttribute("webtoonId") Optional<UUID> webtoonId) {
+    public String doDeleteWebtoon(@SessionAttribute(name = SESSION_LOGIN_CUSTOMER, required = false) Customer loginCustomer,
+                                  @ModelAttribute("webtoonId") Optional<UUID> webtoonId) {
+        if (!loginCustomer.getGrade().equals(Grade.ADMIN)) {
+            return "redirect:/webtoon";
+        }
 
         if (webtoonId.isEmpty()) {
             webtoonService.deleteAll();
