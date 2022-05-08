@@ -1,5 +1,6 @@
 package com.programmers_solo.webtoonSub.customer.model;
 
+import com.programmers_solo.webtoonSub.exception.WalletException;
 import com.programmers_solo.webtoonSub.webtoon.model.Webtoon;
 import lombok.*;
 
@@ -48,7 +49,7 @@ public class Customer {
 
     public void useWallet(long money) {
         if (this.wallet < money) {
-            throw new IllegalArgumentException("잔액이 모자랍니다");
+            throw new WalletException("잔액이 모자랍니다");
         }
         this.wallet -= money;
         this.updatedAt = LocalDateTime.now();

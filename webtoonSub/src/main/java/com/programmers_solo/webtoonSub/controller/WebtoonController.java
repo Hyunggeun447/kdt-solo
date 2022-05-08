@@ -67,7 +67,7 @@ public class WebtoonController {
                 model.addAttribute("webtoon", webtoon);
                 return "webtoon/webtoon";
             }
-        } catch (AuthorityException e) {
+        } catch (NullPointerException e) {
             log.info("구독한 기록 없음.");
         }
         return "redirect:/webtoon/buy?webtoonId=" + webtoonId;
