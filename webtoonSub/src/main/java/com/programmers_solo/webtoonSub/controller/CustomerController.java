@@ -3,7 +3,6 @@ package com.programmers_solo.webtoonSub.controller;
 import com.programmers_solo.webtoonSub.customer.model.Customer;
 import com.programmers_solo.webtoonSub.customer.service.CustomerService;
 import com.programmers_solo.webtoonSub.dto.*;
-import com.programmers_solo.webtoonSub.exception.AuthorityException;
 import com.programmers_solo.webtoonSub.exception.WalletException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
